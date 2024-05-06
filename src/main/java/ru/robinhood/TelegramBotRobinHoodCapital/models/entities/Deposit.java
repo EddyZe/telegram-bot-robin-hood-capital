@@ -41,8 +41,4 @@ public class Deposit implements Serializable {
 
     @Column(name = "amount")
     private Long amount;
-
-    public boolean getStatus() {
-        return this.status;
-    }
 }

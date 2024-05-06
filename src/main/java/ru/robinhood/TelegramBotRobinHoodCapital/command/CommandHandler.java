@@ -10,9 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.robinhood.TelegramBotRobinHoodCapital.bot.RobbinHoodTelegramBot;
 import ru.robinhood.TelegramBotRobinHoodCapital.command.impl.*;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.InferenceController;
+import ru.robinhood.TelegramBotRobinHoodCapital.controllers.WalletController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.MessageHelper;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.*;
+import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AdminPanel;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class CommandHandler {
     private final StartCommand startCommand;
     private final PersonalAccountCommand personalAccountCommand;
     private final InferenceController inferenceController;
+    private final AdminPanelCommand adminPanelCommand;
     private final WalletManagementCommand walletManagementCommand;
     private final CreateWalletCommand createWalletCommand;
     private final HistoryDepositCommand historyDepositCommand;
@@ -36,24 +39,28 @@ public class CommandHandler {
     private final DepositCommand depositCommand;
     private final SettingWalletCommand settingWalletCommand;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
+    private final WalletController walletController;
     private final Map<Long, String> chatIdCurrentCommand = new HashMap<>();
     private final Map<Long, Message> chatIdMessage = new HashMap<>();
     private final String adminNumberWallet;
+    private final AuthAdminCommand authAdminCommand;
+    private final ConfimInferenceCommand confimInferenceCommand;
 
     public CommandHandler(StartCommand startCommand,
-                          PersonalAccountCommand personalAccountCommand, InferenceController inferenceController,
+                          PersonalAccountCommand personalAccountCommand, InferenceController inferenceController, AdminPanelCommand adminPanelCommand,
                           WalletManagementCommand walletManagementCommand,
                           CreateWalletCommand createWalletCommand, HistoryDepositCommand historyDepositCommand, InferenceCommand inferenceCommand, HistoryInferenceCommand historyInferenceCommand,
                           CancelCommand cancelCommand,
                           @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand,
-                          InlineKeyboardInitializer inlineKeyboardInitializer,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet) {
+                          InlineKeyboardInitializer inlineKeyboardInitializer, WalletController walletController,
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ConfimInferenceCommand confimInferenceCommand) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
         this.inferenceController = inferenceController;
+        this.adminPanelCommand = adminPanelCommand;
         this.walletManagementCommand = walletManagementCommand;
         this.createWalletCommand = createWalletCommand;
         this.historyDepositCommand = historyDepositCommand;
@@ -65,7 +72,10 @@ public class CommandHandler {
         this.depositCommand = depositCommand;
         this.settingWalletCommand = settingWalletCommand;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
+        this.walletController = walletController;
         this.adminNumberWallet = adminNumberWallet;
+        this.authAdminCommand = authAdminCommand;
+        this.confimInferenceCommand = confimInferenceCommand;
     }
 
 
@@ -84,19 +94,30 @@ public class CommandHandler {
     }
 
 
-
     private void callBackQueryChecked(Update update) {
         String callBackQuery = update.getCallbackQuery().getData();
         Message message = update.getCallbackQuery().getMessage();
 
         if (callBackQuery.equals(AccountManagerCommand.SETTING_WALLET.name())) {
+
             settingWalletCommand.execute(message);
+
         } else if (callBackQuery.equals(SettingWalletCommands.GO_BACK.name())) {
+
             personalAccountCommand.execute(message);
+
         } else if (callBackQuery.equals(SettingWalletCommands.LINK_WALLET.name())) {
 
-            chatIdCurrentCommand.put(message.getChatId(), SettingWalletCommands.LINK_WALLET.name());
+            if (walletController.findByOwnerChatId(message.getChatId()).isPresent()) {
+                robbinHoodTelegramBot.editMessage(
+                        message,
+                        "💰 Настройка кошелька 💰\n\nВы уже привязали кошелек! Обратитесь к администратору!",
+                        inlineKeyboardInitializer.initGoBackSettingWallet()
+                );
+                return;
+            }
 
+            chatIdCurrentCommand.put(message.getChatId(), SettingWalletCommands.LINK_WALLET.name());
             chatIdMessage.put(message.getChatId(), message);
 
             robbinHoodTelegramBot.editMessage(
@@ -104,29 +125,42 @@ public class CommandHandler {
                     "💰 Настройка кошелька 💰\n\nОтправьте ссылку на ваш кошелек: ",
                     inlineKeyboardInitializer.initGoBackSettingWallet()
             );
+
         } else if (callBackQuery.equals(WalletManagement.DEPOSIT.name())) {
+
             depositCommand.execute(message);
+
         } else if (callBackQuery.equals(SettingWalletCommands.GO_BACK_SETTING.name())) {
 
             if (chatIdCurrentCommand.containsKey(message.getChatId()))
                 chatIdCurrentCommand.remove(message.getChatId());
 
             settingWalletCommand.execute(message);
+
         } else if (callBackQuery.equals(AccountManagerCommand.CLOSE.name())) {
+
             robbinHoodTelegramBot.deleteMessage(message);
+
         } else if (callBackQuery.equals(WalletManagement.SEND_CODE_NEW_MESSAGE.name())) {
+
             robbinHoodTelegramBot.sendMessage(
                     message.getChatId(),
                     String.valueOf(message.getChatId()),
                     null);
+
         } else if (callBackQuery.equals(WalletManagement.SEND_NUMBER_WALLET_NEW_MESSAGE.name())) {
+
             robbinHoodTelegramBot.sendMessage(
                     message.getChatId(),
                     adminNumberWallet,
                     null);
+
         } else if (callBackQuery.equals(AccountManagerCommand.HISTORY_DIPOSIT.name())) {
+
             historyDepositCommand.execute(message);
+
         } else if (callBackQuery.equals(WalletManagement.INFERENCE.name())) {
+
             String response = """
                     Введите сумму которую хотите вывести.
                     Сумма вывода не должна быть меньше 100$ и не больше 10.000$""";
@@ -138,11 +172,14 @@ public class CommandHandler {
 
             chatIdCurrentCommand.put(message.getChatId(), WalletManagement.INFERENCE.name());
             chatIdMessage.put(message.getChatId(), message);
-        } else if (callBackQuery.equals(WalletManagement.GO_BACK_INFERENCE_AND_DEPOSIT.name())) {
-           chatIdCurrentCommand.remove(message.getChatId());
 
+        } else if (callBackQuery.equals(WalletManagement.GO_BACK_INFERENCE_AND_DEPOSIT.name())) {
+
+            chatIdCurrentCommand.remove(message.getChatId());
             walletManagementCommand.execute(message);
+
         } else if (callBackQuery.equals(AdminCommand.SHOW_WALLET_NUMBER.name())) {
+
             Optional<Inference> inference = inferenceController.findById(
                     MessageHelper.findInferenceIdText(message.getText()));
 
@@ -161,8 +198,14 @@ public class CommandHandler {
                     inlineKeyboardInitializer.initInference());
 
             chatIdMessage.remove(message.getChatId());
+
         } else if (callBackQuery.equals(AccountManagerCommand.HISTORY_INFERENCE.name())) {
+
             historyInferenceCommand.execute(message);
+
+        } else if (callBackQuery.equals(AdminCommand.CONFIRM_INFERENCE.name())) {
+
+            confimInferenceCommand.execute(message);
         }
     }
 
@@ -184,14 +227,18 @@ public class CommandHandler {
             personalAccountCommand.execute(message);
         } else if (text.equals(MenuCommand.WALLET_MANAGEMENT.toString())) {
             walletManagementCommand.execute(message);
-        } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
-            checkerCurrentCommand(message);
         } else if (text.equals(MenuCommand.CALCULATE.toString())) {
             chatIdCurrentCommand.put(message.getChatId(), MenuCommand.CALCULATE.toString());
             robbinHoodTelegramBot.sendMessage(
                     message.getChatId(),
                     "🔢 Калькулятор 🔢\n\nВведите сумму в USD которую хотите внести или 'отмена' для отмены операции",
                     null);
+        } else if (text.contains("/authadmin")) {
+            authAdminCommand.execute(message);
+        } else if (text.equals("/adminpanel")) {
+            adminPanelCommand.execute(message);
+        } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
+            checkerCurrentCommand(message);
         }
 
     }

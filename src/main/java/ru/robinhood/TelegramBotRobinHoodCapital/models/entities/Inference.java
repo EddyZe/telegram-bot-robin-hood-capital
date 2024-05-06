@@ -41,9 +41,4 @@ public class Inference {
     @ManyToOne
     @JoinColumn(name = "owner_inference", referencedColumnName = "id")
     private User owner;
-
-
-    public boolean getStatus() {
-        return status;
-    }
 }

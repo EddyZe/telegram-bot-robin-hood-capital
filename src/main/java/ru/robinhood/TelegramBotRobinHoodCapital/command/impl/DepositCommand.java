@@ -30,16 +30,19 @@ public class DepositCommand implements Command {
     private final DepositController depositController;
     private final UserController userController;
     private final String walletNumber;
+    private final String qrCodeWallet;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
 
 
     public DepositCommand(@Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, ApiTonkeeperClient apiTonkeeperClient, DepositController depositController, UserController userController,
-                          @Value("${tonkeeper.url.admin.wallet}") String walletNumber, InlineKeyboardInitializer inlineKeyboardInitializer) {
+                          @Value("${tonkeeper.url.admin.wallet}") String walletNumber,
+                          @Value("${telegram.bot.QR.code.filename}") String qrCodeWallet, InlineKeyboardInitializer inlineKeyboardInitializer) {
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
         this.apiTonkeeperClient = apiTonkeeperClient;
         this.depositController = depositController;
         this.userController = userController;
         this.walletNumber = walletNumber;
+        this.qrCodeWallet = qrCodeWallet;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
     }
 
@@ -66,7 +69,7 @@ public class DepositCommand implements Command {
 
         robbinHoodTelegramBot.sendPhoto(
                 message,
-                "wallet.png",
+                qrCodeWallet,
                 response,
                 inlineKeyboardInitializer.initClosePayMessage());
     }

@@ -43,7 +43,7 @@ public class HistoryInferenceCommand implements Command {
         inferences.forEach(inference -> {
             Double amount = Double.valueOf(inference.getAmount()) / 100;
 
-            String status = inference.getStatus() ? "Выполнен ✅" : "В обработке 🔄️";
+            String status = inference.isStatus() ? "Выполнен ✅" : "В обработке 🔄️";
 
             String response = """
                     ID: #%s

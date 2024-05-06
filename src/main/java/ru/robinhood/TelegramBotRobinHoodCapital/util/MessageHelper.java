@@ -88,16 +88,19 @@ public class MessageHelper {
     }
 
     public static String inferenceInfo(Inference inference) {
+        String status = inference.isStatus() ? "Выполнен ✅" : "В обработке 🔄️";
         return """
                 Заявка на снятие средств💰
                                     
                 ID: #%s
                 Имя: %s
                 Сумма: %s USD
+                Статус: %s
                 Номер кошелька: %s""".formatted(
                 inference.getId(),
                 inference.getOwner().getName(),
                 ((double) inference.getAmount()) / 100,
+                status,
                 inference.getWalletAddress());
     }
 

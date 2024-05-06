@@ -53,4 +53,5 @@ public class User implements Serializable {
     @Column(name = "user_role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
 }

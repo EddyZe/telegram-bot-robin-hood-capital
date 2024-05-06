@@ -69,9 +69,9 @@ public class CreateWalletCommand implements Command {
 
             tonkreeperBalanceWallet = apiTonkeeperClient.getTonKeeperWalletBalance(wallet);
         } catch (HttpClientErrorException e) {
-            robbinHoodTelegramBot.sendMessage(chatId,
+            robbinHoodTelegramBot.editMessage(message,
                     "Упс! Возможно вы ввели не валидный адрес кошелька! Попробуй снова или введи 'отмена'",
-                    null);
+                    inlineKeyboardInitializer.initGoBackSettingWallet());
             return;
         }
 
@@ -93,40 +93,47 @@ public class CreateWalletCommand implements Command {
             walletController.save(newWallet);
             userController.save(user);
 
-            long tonPrice = apiTonkeeperClient.getTonPrice();
-            long amount = Long.parseLong(tonkreeperBalanceWallet);
-
-            amount *= tonPrice;
-
-            double balance = ((double) amount) / 1_000_000_000;
-
-            String response = """
-                    💰 Настройка кошелька 💰
-                    
-                    Вы привязали кошелек!
-                    Теперь вам доступны функции снятия и пополнения!
-                    Баланс вашего кошелька: %.2f USD""".formatted(
-                            balance / 100);
+            String response = generateResponse(tonkreeperBalanceWallet);
 
             robbinHoodTelegramBot.editMessage(
                     message,
                     response,
                     inlineKeyboardInitializer.initGoBackSettingWallet()
             );
-        } else {
-            Wallet wallet = walletController.findByOwnerChatId(chatId).orElseThrow();
-
-            wallet.setNumberWallet(walletAddress);
-
-            robbinHoodTelegramBot.editMessage(
-                    message,
-                    "💰 Настройка кошелька 💰\n\nВы привязали кошелек!\nВаш новый адрес кошелька: %s".formatted(walletAddress),
-                    inlineKeyboardInitializer.initGoBackSettingWallet()
-            );
-            user.setWallet(wallet);
-            user.setState(UserState.BASE);
-            walletController.save(wallet);
-            userController.save(user);
         }
+        //else {
+//            Wallet wallet = walletController.findByOwnerChatId(chatId).orElseThrow();
+//
+//            wallet.setNumberWallet(walletAddress);
+//
+//            user.setWallet(wallet);
+//            user.setState(UserState.BASE);
+//            walletController.save(wallet);
+//            userController.save(user);
+//
+//            robbinHoodTelegramBot.editMessage(
+//                    message,
+//                    "💰 Настройка кошелька 💰\n\nВы привязали кошелек!\nВаш новый адрес кошелька: %s".formatted(walletAddress),
+//                    inlineKeyboardInitializer.initGoBackSettingWallet()
+//            );
+
+ //       }
+    }
+
+    private String generateResponse(String tonkreeperBalanceWallet) {
+        long tonPrice = apiTonkeeperClient.getTonPrice();
+        long amount = Long.parseLong(tonkreeperBalanceWallet);
+
+        amount *= tonPrice;
+
+        double balance = ((double) amount) / 1_000_000_000;
+
+        return """
+                💰 Настройка кошелька 💰
+                                
+                Вы привязали кошелек!
+                Теперь вам доступны функции снятия и пополнения!
+                Баланс вашего кошелька: %.2f USD""".formatted(
+                balance / 100);
     }
 }

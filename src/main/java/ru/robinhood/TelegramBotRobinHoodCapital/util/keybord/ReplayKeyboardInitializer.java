@@ -1,9 +1,11 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.util.keybord;
 
 
+import org.hibernate.boot.jaxb.mapping.DiscriminatedAssociation;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AdminPanel;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.MenuCommand;
 
 import java.util.ArrayList;
@@ -34,6 +36,20 @@ public class ReplayKeyboardInitializer {
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setKeyboard(rows);
 
+        return replyKeyboardMarkup;
+    }
+
+    public ReplyKeyboardMarkup initAdminPanel() {
+        replyKeyboardMarkup = new ReplyKeyboardMarkup();
+
+        var rows = createRows(
+                createdRow(AdminPanel.SHOW_INFERENCE_FALSE.toString(), AdminPanel.SHOW_INFERENCE_TRUE.toString()),
+                createdRow(AdminPanel.SHOW_INFERENCE_ALL.toString(), AdminPanel.SEND_ALL_USERS_MESSAGE.toString()),
+                createdRow(AdminPanel.GO_BACK_MENU_COMMAND.toString())
+        );
+
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setKeyboard(rows);
         return replyKeyboardMarkup;
     }
 

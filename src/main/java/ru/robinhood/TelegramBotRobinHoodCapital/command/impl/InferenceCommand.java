@@ -80,7 +80,7 @@ public class InferenceCommand implements Command {
 
                 wallet.setBalance(wallet.getBalance() - (amount * 100));
 
-                if (wallet.getOrigBalance() != wallet.getBalance())
+                if (wallet.getOrigBalance() > wallet.getBalance())
                     wallet.setOrigBalance(wallet.getBalance());
 
                 Inference inference = createInference(userOptional.get(), amount);

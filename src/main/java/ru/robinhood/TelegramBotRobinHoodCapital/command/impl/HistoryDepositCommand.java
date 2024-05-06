@@ -44,7 +44,7 @@ public class HistoryDepositCommand implements Command {
         deposits.forEach(deposit -> {
             Double amount = Double.valueOf(deposit.getAmount()) / 100;
 
-            String status = deposit.getStatus() ? "Выполнен ✅" : "В обработке 🔄️";
+            String status = deposit.isStatus() ? "Выполнен ✅" : "В обработке 🔄️";
 
             String response = """
                     ID депозита: #%s
