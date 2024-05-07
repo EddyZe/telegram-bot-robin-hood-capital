@@ -41,4 +41,7 @@ public class Inference {
     @ManyToOne
     @JoinColumn(name = "owner_inference", referencedColumnName = "id")
     private User owner;
+
+    @Column(name = "update_at")
+    private LocalDateTime updateAt;
 }

@@ -88,6 +88,20 @@ public class InlineKeyboardInitializer {
         return inlineKeyboardMarkup;
     }
 
+    public InlineKeyboardMarkup initAdminInference() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var showAll = createButton("Все", AdminCommand.SHOW_INFERENCE_ALL);
+        var showConfirmedInference = createButton("Подтвержденные", AdminCommand.SHOW_INFERENCE_TRUE);
+        var showInConfirmedInference = createButton("Ожидают обработки", AdminCommand.SHOW_INFERENCE_FALSE);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+
+        var rows = createListButton(showAll, showConfirmedInference, showInConfirmedInference, close);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
     public InlineKeyboardMarkup initInference() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 

@@ -14,6 +14,7 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.MessageHelper;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -75,12 +76,13 @@ public class ConfimInferenceCommand implements Command {
                     Заявка на вывод 💰
                                         
                     Вы обработали заявку #%s. Клиент получит уведомление автоматически!"""
-                    .formatted(inference.getOwner().getName());
+                    .formatted(inference.getId());
 
             robbinHoodTelegramBot.editMessage(message, responseAdmin, null);
             robbinHoodTelegramBot.sendMessage(inference.getChatId(), responseClient, null);
 
             inference.setStatus(true);
+            inference.setUpdateAt(LocalDateTime.now());
             inferenceController.save(inference);
         }
     }

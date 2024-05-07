@@ -10,14 +10,18 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.robinhood.TelegramBotRobinHoodCapital.bot.RobbinHoodTelegramBot;
 import ru.robinhood.TelegramBotRobinHoodCapital.command.impl.*;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.InferenceController;
+import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.WalletController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.MessageHelper;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.*;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AdminPanel;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
+import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.ReplayKeyboardInitializer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,6 +42,7 @@ public class CommandHandler {
     private final CalculateCommand calculateCommand;
     private final DepositCommand depositCommand;
     private final SettingWalletCommand settingWalletCommand;
+    private final UserController userController;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
     private final WalletController walletController;
     private final Map<Long, String> chatIdCurrentCommand = new HashMap<>();
@@ -45,6 +50,7 @@ public class CommandHandler {
     private final String adminNumberWallet;
     private final AuthAdminCommand authAdminCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
+    private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
     public CommandHandler(StartCommand startCommand,
                           PersonalAccountCommand personalAccountCommand, InferenceController inferenceController, AdminPanelCommand adminPanelCommand,
@@ -53,9 +59,9 @@ public class CommandHandler {
                           CancelCommand cancelCommand,
                           @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
-                          SettingWalletCommand settingWalletCommand,
+                          SettingWalletCommand settingWalletCommand, UserController userController,
                           InlineKeyboardInitializer inlineKeyboardInitializer, WalletController walletController,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ConfimInferenceCommand confimInferenceCommand) {
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ConfimInferenceCommand confimInferenceCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -71,11 +77,13 @@ public class CommandHandler {
         this.calculateCommand = calculateCommand;
         this.depositCommand = depositCommand;
         this.settingWalletCommand = settingWalletCommand;
+        this.userController = userController;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
         this.walletController = walletController;
         this.adminNumberWallet = adminNumberWallet;
         this.authAdminCommand = authAdminCommand;
         this.confimInferenceCommand = confimInferenceCommand;
+        this.replayKeyboardInitializer = replayKeyboardInitializer;
     }
 
 
@@ -183,10 +191,18 @@ public class CommandHandler {
             Optional<Inference> inference = inferenceController.findById(
                     MessageHelper.findInferenceIdText(message.getText()));
 
-            inference.ifPresent(value -> robbinHoodTelegramBot.editMessage(
-                    message,
-                    value.getWalletAddress(),
-                    inlineKeyboardInitializer.initGoBackInference()));
+            inference.ifPresent(value -> {
+                String response;
+                if (inference.get().isStatus())
+                    response = "Заказ уже обработан другим администратором";
+                else
+                    response = value.getWalletAddress();
+
+                robbinHoodTelegramBot.editMessage(
+                        message,
+                        response,
+                        inlineKeyboardInitializer.initGoBackInference());
+            });
 
             chatIdMessage.put(message.getChatId(), message);
 
@@ -206,6 +222,55 @@ public class CommandHandler {
         } else if (callBackQuery.equals(AdminCommand.CONFIRM_INFERENCE.name())) {
 
             confimInferenceCommand.execute(message);
+        } else if (callBackQuery.equals(AdminCommand.SHOW_INFERENCE_ALL.name())) {
+            List<Inference> inferences = inferenceController.findByAll();
+
+            if (inferences.isEmpty()) {
+                robbinHoodTelegramBot.editMessage(
+                        message,
+                        "Пока что нет, не одного запроса на вывод средств.",
+                        inlineKeyboardInitializer.initAdminInference());
+                return;
+            }
+            inferences.forEach(inference ->
+                    robbinHoodTelegramBot.sendMessage(
+                            message.getChatId(),
+                            MessageHelper.inferenceInfo(inference),
+                            inlineKeyboardInitializer.initInference()));
+
+        } else if (callBackQuery.equals(AdminCommand.SHOW_INFERENCE_FALSE.name())) {
+            List<Inference> inferences = inferenceController.findByStatusFalse();
+
+            if (inferences.isEmpty()) {
+                robbinHoodTelegramBot.editMessage(
+                        message,
+                        "Все запросы на вывод обработаны",
+                        inlineKeyboardInitializer.initAdminInference());
+                return;
+            }
+
+            inferences.forEach(inference ->
+                    robbinHoodTelegramBot.sendMessage(
+                            message.getChatId(),
+                            MessageHelper.inferenceInfo(inference),
+                            inlineKeyboardInitializer.initInference()));
+        } else if (callBackQuery.equals(AdminCommand.SHOW_INFERENCE_TRUE.name())) {
+            List<Inference> inferences = inferenceController.findByStatusTrue();
+
+            if(inferences.isEmpty()) {
+                robbinHoodTelegramBot.editMessage(
+                        message,
+                        "Список обработаных заявок на вывод пуст.",
+                        inlineKeyboardInitializer.initAdminInference());
+                return;
+            }
+
+            inferences.forEach(inference ->
+                    robbinHoodTelegramBot.sendMessage(
+                            message.getChatId(),
+                            MessageHelper.inferenceInfo(inference),
+                            inlineKeyboardInitializer.initInference()
+                    ));
         }
     }
 
@@ -237,6 +302,46 @@ public class CommandHandler {
             authAdminCommand.execute(message);
         } else if (text.equals("/adminpanel")) {
             adminPanelCommand.execute(message);
+        } else if (text.equals(AdminPanel.SHOW_INFERENCE.toString())) {
+            Optional<User> userOptional = userController.findByChatId(message.getChatId());
+
+            userOptional.ifPresent(user -> {
+                if (user.getRole() == Role.ADMIN) {
+                    String response = "Какие запросы на вывод отоброзить?";
+                    robbinHoodTelegramBot.sendMessage(
+                            message.getChatId(),
+                            response,
+                            inlineKeyboardInitializer.initAdminInference());
+                } else
+                    robbinHoodTelegramBot.sendMessage(
+                            message.getChatId(),
+                            "Команда доступна только администраторам!",
+                            null);
+            });
+
+        } else if (text.equals(AdminPanel.GO_BACK_MENU_COMMAND.toString())) {
+            Optional<User> userOptional = userController.findByChatId(message.getChatId());
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                if (user.getRole() != Role.ADMIN) {
+                    robbinHoodTelegramBot.sendMessage(
+                            message.getChatId(),
+                            "Команда доступна только администраторам!",
+                            null
+                    );
+                }
+                return;
+            }
+
+            String response = "Чтобы вернуть в панель адменистратора введите /adminpanel";
+
+            robbinHoodTelegramBot.sendMessage(
+                    message.getChatId(),
+                    response,
+                    replayKeyboardInitializer.initStartingKeyboard());
+
+
         } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
             checkerCurrentCommand(message);
         }

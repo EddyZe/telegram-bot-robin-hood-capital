@@ -5,6 +5,7 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class MessageHelper {
@@ -88,7 +89,10 @@ public class MessageHelper {
     }
 
     public static String inferenceInfo(Inference inference) {
-        String status = inference.isStatus() ? "Выполнен ✅" : "В обработке 🔄️";
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String status = inference.isStatus() ? "Обработан %s ✅".formatted(dtf.format(inference.getUpdateAt())) :
+                "В обработке 🔄️";
+
         return """
                 Заявка на снятие средств💰
                                     
@@ -96,7 +100,8 @@ public class MessageHelper {
                 Имя: %s
                 Сумма: %s USD
                 Статус: %s
-                Номер кошелька: %s""".formatted(
+                Номер кошелька:
+                 %s""".formatted(
                 inference.getId(),
                 inference.getOwner().getName(),
                 ((double) inference.getAmount()) / 100,

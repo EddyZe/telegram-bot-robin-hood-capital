@@ -43,8 +43,7 @@ public class ReplayKeyboardInitializer {
         replyKeyboardMarkup = new ReplyKeyboardMarkup();
 
         var rows = createRows(
-                createdRow(AdminPanel.SHOW_INFERENCE_FALSE.toString(), AdminPanel.SHOW_INFERENCE_TRUE.toString()),
-                createdRow(AdminPanel.SHOW_INFERENCE_ALL.toString(), AdminPanel.SEND_ALL_USERS_MESSAGE.toString()),
+                createdRow(AdminPanel.SHOW_INFERENCE.toString(), AdminPanel.SEND_ALL_USERS_MESSAGE.toString()),
                 createdRow(AdminPanel.GO_BACK_MENU_COMMAND.toString())
         );
 
