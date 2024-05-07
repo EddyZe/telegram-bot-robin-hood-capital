@@ -100,8 +100,10 @@ public class MessageHelper {
                 Имя: %s
                 Сумма: %s USD
                 Статус: %s
-                Номер кошелька:
-                 %s""".formatted(
+                
+                Нажмите 'Показать номер кошелька', чтобы увидеть куда переводить средства.
+                 
+                ⚠️Перед подтверждением не забудьте перевести средства клиенту! Убедитесь, что отправляете TON⚠️""".formatted(
                 inference.getId(),
                 inference.getOwner().getName(),
                 ((double) inference.getAmount()) / 100,

@@ -130,7 +130,7 @@ public class CommandHandler {
 
             robbinHoodTelegramBot.editMessage(
                     message,
-                    "💰 Настройка кошелька 💰\n\nОтправьте ссылку на ваш кошелек: ",
+                    "💰 Настройка кошелька 💰\n\nОтправьте ссылку на ваш TON кошелек.",
                     inlineKeyboardInitializer.initGoBackSettingWallet()
             );
 
@@ -330,18 +330,16 @@ public class CommandHandler {
                             "Команда доступна только администраторам!",
                             null
                     );
+                    return;
                 }
-                return;
+
+                String response = "Чтобы вернуть в панель адменистратора введите /adminpanel";
+
+                robbinHoodTelegramBot.sendMessage(
+                        message.getChatId(),
+                        response,
+                        replayKeyboardInitializer.initStartingKeyboard());
             }
-
-            String response = "Чтобы вернуть в панель адменистратора введите /adminpanel";
-
-            robbinHoodTelegramBot.sendMessage(
-                    message.getChatId(),
-                    response,
-                    replayKeyboardInitializer.initStartingKeyboard());
-
-
         } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
             checkerCurrentCommand(message);
         }

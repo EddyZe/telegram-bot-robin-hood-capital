@@ -3,7 +3,7 @@ package ru.robinhood.TelegramBotRobinHoodCapital.util.enums;
 public enum AdminPanel {
 
     SHOW_INFERENCE("Запросы на вывод 💰"),
-    SEND_ALL_USERS_MESSAGE("Отправить всем сообщение ✉️"),
+    ADMIN_COMMANDS("Команды администатора 👤"),
     GO_BACK_MENU_COMMAND("Вернуться в меню⬅️");
 
 

@@ -41,16 +41,17 @@ public class HistoryInferenceCommand implements Command {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         inferences.forEach(inference -> {
-            Double amount = Double.valueOf(inference.getAmount()) / 100;
-
-            String status = inference.isStatus() ? "Выполнен ✅" : "В обработке 🔄️";
+            Double amount = ((double) inference.getAmount()) / 100;
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            String status = inference.isStatus() ? "Обработан %s ✅".formatted(dtf.format(inference.getUpdateAt())) :
+                    "В обработке 🔄️";
 
             String response = """
                     ID: #%s
                    
                     Сумма: %.2f USD
                     Статус: %s
-                    Дата и время: %s"""
+                    Дата создания: %s"""
                     .formatted(
                             inference.getId(),
                             amount,

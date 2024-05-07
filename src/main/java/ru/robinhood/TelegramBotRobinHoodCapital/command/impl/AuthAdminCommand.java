@@ -70,7 +70,7 @@ public class AuthAdminCommand implements Command {
 
         String response = """
                 Вы авторизовались как администратор.
-                Воспользуйтесь командой /adminpanel, чтобы открыть клавиатуру администратора!""";
+                Введите - /adminpanel, чтобы открыть клавиатуру администратора!""";
 
         robbinHoodTelegramBot.sendMessage(chatId, response, replayKeyboardInitializer.initStartingKeyboard());
 
