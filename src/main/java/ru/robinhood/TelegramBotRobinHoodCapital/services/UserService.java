@@ -3,8 +3,6 @@ package ru.robinhood.TelegramBotRobinHoodCapital.services;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.repositories.UserRepository;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
@@ -35,6 +33,10 @@ public class UserService {
 
     public List<User> findByRole(Role role) {
         return userRepository.findByRole(role);
+    }
+
+    public List<User> findByAll() {
+        return userRepository.findAll();
     }
 
 }

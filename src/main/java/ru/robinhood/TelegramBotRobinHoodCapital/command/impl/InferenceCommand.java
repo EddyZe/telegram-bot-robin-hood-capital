@@ -16,7 +16,6 @@ import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,7 +92,7 @@ public class InferenceCommand implements Command {
                 notifyAdmins(inference);
 
                 String response = """
-                        Заявка на снятие средств💰
+                        <b>Заявка на снятие средств</b>💰
                         
                         Мы вышлем уведомление, как обработаем вашу заявку!
                         
@@ -128,10 +127,8 @@ public class InferenceCommand implements Command {
 
     private void notifyAdmins(Inference inference) {
         List<User> admins = userController.findByRole(Role.ADMIN);
-        admins.forEach(admin -> {
-            robbinHoodTelegramBot.sendMessage(admin.getChatId(),
-                    MessageHelper.inferenceInfo(inference),
-                    inlineKeyboardInitializer.initInference());
-        });
+        admins.forEach(admin -> robbinHoodTelegramBot.sendMessage(admin.getChatId(),
+                MessageHelper.inferenceInfo(inference),
+                inlineKeyboardInitializer.initInference()));
     }
 }

@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -19,7 +18,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.robinhood.TelegramBotRobinHoodCapital.command.CommandHandler;
 
 import java.io.File;
-import java.util.Collections;
 
 
 @Component
@@ -47,6 +45,7 @@ public class RobbinHoodTelegramBot extends TelegramLongPollingBot {
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
         sendMessage.setReplyMarkup(replyKeyboard);
+        sendMessage.enableHtml(true);
 
         try {
             execute(sendMessage);
@@ -60,6 +59,7 @@ public class RobbinHoodTelegramBot extends TelegramLongPollingBot {
         editMessageText.setChatId(message.getChatId());
         editMessageText.setMessageId(message.getMessageId());
         editMessageText.setText(text);
+        editMessageText.enableHtml(true);
         if (replyKeyboard != null) {
             editMessageText.setReplyMarkup(replyKeyboard);
         }
@@ -90,6 +90,21 @@ public class RobbinHoodTelegramBot extends TelegramLongPollingBot {
         deleteMessage.setMessageId(message.getMessageId());
         deleteMessage.setChatId(message.getChatId());
         execute(deleteMessage);
+    }
+
+    @SneakyThrows
+    public void sendMessageAll(SendMessage sendMessage) {
+        execute(sendMessage);
+    }
+
+    @SneakyThrows
+    public void sendVideoAll(SendVideo sendVideo) {
+        execute(sendVideo);
+    }
+
+    @SneakyThrows
+    public void sendPhotoAll(SendPhoto sendPhoto) {
+        execute(sendPhoto);
     }
 
     @Override

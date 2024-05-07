@@ -45,11 +45,13 @@ public class CommandHandler {
     private final UserController userController;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
     private final WalletController walletController;
+    private final AdminCommandsListCommand adminCommandsListCommand;
     private final Map<Long, String> chatIdCurrentCommand = new HashMap<>();
     private final Map<Long, Message> chatIdMessage = new HashMap<>();
     private final String adminNumberWallet;
     private final AuthAdminCommand authAdminCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
+    private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
     public CommandHandler(StartCommand startCommand,
@@ -60,8 +62,8 @@ public class CommandHandler {
                           @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, UserController userController,
-                          InlineKeyboardInitializer inlineKeyboardInitializer, WalletController walletController,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ConfimInferenceCommand confimInferenceCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          InlineKeyboardInitializer inlineKeyboardInitializer, WalletController walletController, AdminCommandsListCommand adminCommandsListCommand,
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -80,9 +82,11 @@ public class CommandHandler {
         this.userController = userController;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
         this.walletController = walletController;
+        this.adminCommandsListCommand = adminCommandsListCommand;
         this.adminNumberWallet = adminNumberWallet;
         this.authAdminCommand = authAdminCommand;
         this.confimInferenceCommand = confimInferenceCommand;
+        this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
     }
 
@@ -94,10 +98,22 @@ public class CommandHandler {
 
             if (message.hasText()) {
                 checkedTextCommand(message);
+            } else if (message.hasPhoto() || message.hasVideo()) {
+                checkedMediaCommand(message);
             }
         }
         if (update.hasCallbackQuery()) {
             callBackQueryChecked(update);
+        }
+    }
+
+    private void checkedMediaCommand(Message message) {
+        if (message.getCaption() != null) {
+            String text = message.getCaption();
+
+            if (text.contains("/sendvideo") || text.contains("/sendphoto")) {
+                sendMessageAllParticipantsCommand.execute(message);
+            }
         }
     }
 
@@ -340,7 +356,11 @@ public class CommandHandler {
                         response,
                         replayKeyboardInitializer.initStartingKeyboard());
             }
-        } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
+        } else if (text.equals(AdminPanel.ADMIN_COMMANDS.toString())) {
+            adminCommandsListCommand.execute(message);
+        } else if (text.contains("/sendmessage")){
+            sendMessageAllParticipantsCommand.execute(message);
+        }else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
             checkerCurrentCommand(message);
         }
 

@@ -1,7 +1,6 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.controllers;
 
 import org.springframework.stereotype.Controller;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.services.UserService;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
@@ -28,6 +27,10 @@ public class UserController {
 
     public List<User> findByRole(Role role) {
         return userService.findByRole(role);
+    }
+
+    public List<User> findByAll() {
+        return userService.findByAll();
     }
 
 }

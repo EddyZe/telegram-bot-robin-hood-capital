@@ -1,7 +1,5 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.command.impl;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -49,7 +47,7 @@ public class ConfimInferenceCommand implements Command {
 
             if (inference.isStatus()) {
                 responseAdmin = """
-                        Заявка на вывод💰
+                        <b>Заявка на вывод</b>💰
                                                 
                         Заявка уже обработана другим администратором""";
 
@@ -73,7 +71,7 @@ public class ConfimInferenceCommand implements Command {
             String responseClient = getResponseClient(inference, user);
 
             responseAdmin = """
-                    Заявка на вывод 💰
+                    <b>Заявка на вывод</b> 💰
                                         
                     Вы обработали заявку #%s. Клиент получит уведомление автоматически!"""
                     .formatted(inference.getId());
@@ -90,7 +88,7 @@ public class ConfimInferenceCommand implements Command {
     private String getResponseClient(Inference inference, User user) {
         double amount = inference.getAmount();
         return """
-                Заявка на вывод💰
+                <b>Заявка на вывод</b>💰
                                     
                 %s, ваша заявка на %.2f USD обработана. Мы отправили деньги, на ваш кошелек.
                                     

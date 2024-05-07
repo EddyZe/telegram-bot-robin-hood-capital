@@ -1,18 +1,16 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.util;
 
-import ru.robinhood.TelegramBotRobinHoodCapital.controllers.InferenceController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 public class MessageHelper {
 
     public static String infoAccountNotWallet(User user) {
         return """
-                \uD83D\uDC64 Профиль #%d \uD83D\uDC64
+                \uD83D\uDC64<b> Профиль</b> #%d \uD83D\uDC64
                                 
                 Имя пользователя: @%s
                 Имя: %s
@@ -25,9 +23,9 @@ public class MessageHelper {
     }
 
     public static String infoAccount(User user, Wallet wallet) {
-        Double balance = Double.valueOf(wallet.getBalance()) / 100;
+        Double balance = ((double) wallet.getBalance()) / 100;
         return """
-                \uD83D\uDC64 Профиль #%d \uD83D\uDC64
+                \uD83D\uDC64<b> Профиль </b>#%d \uD83D\uDC64
                                 
                 Имя пользователя: @%s
                 Имя: %s
@@ -45,11 +43,11 @@ public class MessageHelper {
     }
 
     public static String infoWallet(Wallet wallet) {
-        Double balance = Double.valueOf(wallet.getBalance()) / 100;
-        Double origBalance = Double.valueOf(wallet.getOrigBalance()) / 100;
+        Double balance = ((double) wallet.getBalance()) / 100;
+        Double origBalance = ((double) wallet.getOrigBalance()) / 100;
 
         return """
-                💰 Cчет: #%s 💰
+                <b>Cчет:</b> #%s 💰
 
                 Баланс: %.2f USD
                 Баланс через год: %.2f USD
@@ -67,7 +65,7 @@ public class MessageHelper {
 
     public static String calculate(Double number) {
         return """
-                🔢 Калькулятор 🔢
+                <b>Калькулятор</b> 🔢
                                 
                 Вот примерные расчеты, если вложить %.2f USD 💰
                                 
@@ -94,7 +92,7 @@ public class MessageHelper {
                 "В обработке 🔄️";
 
         return """
-                Заявка на снятие средств💰
+                <b>Заявка на снятие средств</b>💰
                                     
                 ID: #%s
                 Имя: %s
@@ -107,8 +105,7 @@ public class MessageHelper {
                 inference.getId(),
                 inference.getOwner().getName(),
                 ((double) inference.getAmount()) / 100,
-                status,
-                inference.getWalletAddress());
+                status);
     }
 
     public static Long findInferenceIdText(String text) {

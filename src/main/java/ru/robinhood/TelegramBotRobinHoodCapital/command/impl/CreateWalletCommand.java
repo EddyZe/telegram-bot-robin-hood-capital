@@ -14,7 +14,6 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
 import ru.robinhood.TelegramBotRobinHoodCapital.restclient.ApiTonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.UserState;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.ReplayKeyboardInitializer;
 
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ public class CreateWalletCommand implements Command {
     private final UserController userController;
     private final WalletController walletController;
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
-    private final ReplayKeyboardInitializer replayKeyboardInitializer;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
     private final ApiTonkeeperClient apiTonkeeperClient;
     private final String adminWalletNumber;
@@ -33,14 +31,12 @@ public class CreateWalletCommand implements Command {
     public CreateWalletCommand(UserController userController,
                                WalletController walletController,
                                @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
-                               ReplayKeyboardInitializer replayKeyboardInitializer,
                                InlineKeyboardInitializer inlineKeyboardInitializer,
                                ApiTonkeeperClient apiTonkeeperClient,
                                @Value("${tonkeeper.url.admin.wallet}") String adminWalletNumber) {
         this.userController = userController;
         this.walletController = walletController;
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
-        this.replayKeyboardInitializer = replayKeyboardInitializer;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
         this.apiTonkeeperClient = apiTonkeeperClient;
         this.adminWalletNumber = adminWalletNumber;
@@ -55,7 +51,7 @@ public class CreateWalletCommand implements Command {
         if (walletController.findByNumberWallet(walletAddress).isPresent() || walletAddress.equals(adminWalletNumber)) {
             robbinHoodTelegramBot.editMessage(
                     message,
-                    "💰 Настройки кошелька 💰\n\nУпс! Данный кошелек уже занят! 😶",
+                    "💰 <b>Настройки кошелька</b> 💰\n\nУпс! Данный кошелек уже занят! 😶",
                     inlineKeyboardInitializer.initGoBackSettingWallet());
             return;
         }
