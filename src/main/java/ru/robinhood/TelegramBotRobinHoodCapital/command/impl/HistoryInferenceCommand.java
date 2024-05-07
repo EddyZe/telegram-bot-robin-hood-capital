@@ -49,9 +49,9 @@ public class HistoryInferenceCommand implements Command {
             String response = """
                     ID: #%s
                    
-                    Сумма: %.2f USD
-                    Статус: %s
-                    Дата создания: %s"""
+                    <b>Сумма:</b> %.2f USD
+                    <b>Статус:</b> %s
+                    <b>Дата создания:</b> %s"""
                     .formatted(
                             inference.getId(),
                             amount,

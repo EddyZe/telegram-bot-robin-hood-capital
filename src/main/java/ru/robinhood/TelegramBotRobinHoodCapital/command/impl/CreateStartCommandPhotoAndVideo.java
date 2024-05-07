@@ -53,7 +53,7 @@ public class CreateStartCommandPhotoAndVideo implements Command {
                 return;
             }
 
-            if (message.getCaption().split(" ").length < 2) {
+            if (message.getCaption() == null || message.getCaption().split(" ").length < 2) {
                 robbinHoodTelegramBot.sendMessage(
                         chatId,
                         "Не верный формат команды. Нажмите 'Команды администратора', чтобы посмотреть пример",

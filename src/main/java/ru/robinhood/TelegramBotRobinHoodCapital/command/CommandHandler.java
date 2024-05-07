@@ -143,7 +143,7 @@ public class CommandHandler {
             if (walletController.findByOwnerChatId(message.getChatId()).isPresent()) {
                 robbinHoodTelegramBot.editMessage(
                         message,
-                        "💰 Настройка кошелька 💰\n\nВы уже привязали кошелек! Обратитесь к администратору!",
+                        "💰 <b>Настройка кошелька</b> 💰\n\nВы уже привязали кошелек! Обратитесь к администратору!",
                         inlineKeyboardInitializer.initGoBackSettingWallet()
                 );
                 return;
@@ -154,7 +154,7 @@ public class CommandHandler {
 
             robbinHoodTelegramBot.editMessage(
                     message,
-                    "💰 Настройка кошелька 💰\n\nОтправьте ссылку на ваш TON кошелек.",
+                    "💰 <b>Настройка кошелька</b> 💰\n\nОтправьте ссылку на ваш TON кошелек.",
                     inlineKeyboardInitializer.initGoBackSettingWallet()
             );
 
@@ -164,8 +164,7 @@ public class CommandHandler {
 
         } else if (callBackQuery.equals(SettingWalletCommands.GO_BACK_SETTING.name())) {
 
-            if (chatIdCurrentCommand.containsKey(message.getChatId()))
-                chatIdCurrentCommand.remove(message.getChatId());
+            resetPreviousCommands(message);
 
             settingWalletCommand.execute(message);
 
@@ -303,16 +302,18 @@ public class CommandHandler {
 
         if (text.equalsIgnoreCase("отмена")) {
 
-            if (chatIdCurrentCommand.containsKey(message.getChatId()))
-                chatIdCurrentCommand.remove(message.getChatId());
+            resetPreviousCommands(message);
 
             cancelCommand.execute(message);
             return;
         }
 
         if (text.equals("/start")) {
+            resetPreviousCommands(message);
+
             startCommand.execute(message);
         } else if (text.equals(MenuCommand.PERSONAL_ACCOUNT.toString())) {
+            resetPreviousCommands(message);
             personalAccountCommand.execute(message);
         } else if (text.equals(MenuCommand.WALLET_MANAGEMENT.toString())) {
             walletManagementCommand.execute(message);
@@ -323,10 +324,13 @@ public class CommandHandler {
                     "🔢 Калькулятор 🔢\n\nВведите сумму в USD которую хотите внести или 'отмена' для отмены операции",
                     null);
         } else if (text.contains(AdminCommand.AUTH_ADMIN.toString())) {
+            resetPreviousCommands(message);
             authAdminCommand.execute(message);
         } else if (text.equals(AdminCommand.ADMIN_PANEL.toString())) {
+            resetPreviousCommands(message);
             adminPanelCommand.execute(message);
         } else if (text.equals(AdminPanel.SHOW_INFERENCE.toString())) {
+            resetPreviousCommands(message);
             Optional<User> userOptional = userController.findByChatId(message.getChatId());
 
             userOptional.ifPresent(user -> {
@@ -344,6 +348,7 @@ public class CommandHandler {
             });
 
         } else if (text.equals(AdminPanel.GO_BACK_MENU_COMMAND.toString())) {
+            resetPreviousCommands(message);
             Optional<User> userOptional = userController.findByChatId(message.getChatId());
 
             if (userOptional.isPresent()) {
@@ -365,17 +370,39 @@ public class CommandHandler {
                         replayKeyboardInitializer.initStartingKeyboard());
             }
         } else if (text.equals(AdminPanel.ADMIN_COMMANDS.toString())) {
+            resetPreviousCommands(message);
             adminCommandsListCommand.execute(message);
         } else if (text.contains(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
+            resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
         }else if (text.contains(AdminCommand.CREATE_START_TEXT.toString())) {
+            resetPreviousCommands(message);
             createStartCommandText.execute(message);
-        }
-
-        else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
+        } else if (text.contains(AdminCommand.ADMIN_SEND_VIDEO_ALL.toString())) {
+            resetPreviousCommands(message);
+            sendMessageAllParticipantsCommand.execute(message);
+        } else if (text.contains(AdminCommand.ADMIN_SEND_PHOTO_ALL.toString())) {
+            resetPreviousCommands(message);
+            sendMessageAllParticipantsCommand.execute(message);
+        } else if (text.contains(AdminCommand.CREATE_START_PHOTO.toString())) {
+            resetPreviousCommands(message);
+            createStartCommandPhotoAndVideo.execute(message);
+        } else if (text.contains(AdminCommand.CREATE_START_VIDEO.toString())) {
+            resetPreviousCommands(message);
+            createStartCommandPhotoAndVideo.execute(message);
+        } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
             checkerCurrentCommand(message);
-        }
+        } else
+            robbinHoodTelegramBot.sendMessage(
+                    message.getChatId(),
+                    "Пока что я не знаю таких команд 🙄",
+                    null);
 
+    }
+
+    private void resetPreviousCommands(Message message) {
+        if (chatIdCurrentCommand.containsKey(message.getChatId()))
+            chatIdCurrentCommand.remove(message.getChatId());
     }
 
     private void checkerCurrentCommand(Message message) {

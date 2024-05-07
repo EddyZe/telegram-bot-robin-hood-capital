@@ -43,8 +43,8 @@ public class MessageHelper {
     }
 
     public static String infoWallet(Wallet wallet) {
-        Double balance = ((double) wallet.getBalance()) / 100;
-        Double origBalance = ((double) wallet.getOrigBalance()) / 100;
+        double balance = ((double) wallet.getBalance()) / 100;
+        double origBalance = ((double) wallet.getOrigBalance()) / 100;
 
         return """
                 <b>Cчет:</b> #%s 💰
@@ -101,11 +101,12 @@ public class MessageHelper {
                 
                 Нажмите 'Показать номер кошелька', чтобы увидеть куда переводить средства.
                  
-                ⚠️Перед подтверждением не забудьте перевести средства клиенту! Убедитесь, что отправляете TON⚠️""".formatted(
-                inference.getId(),
-                inference.getOwner().getName(),
-                ((double) inference.getAmount()) / 100,
-                status);
+                ⚠️Перед подтверждением не забудьте перевести средства клиенту! Убедитесь, что отправляете TON⚠️"""
+                .formatted(
+                    inference.getId(),
+                    inference.getOwner().getName(),
+                    ((double) inference.getAmount()) / 100,
+                    status);
     }
 
     public static Long findInferenceIdText(String text) {

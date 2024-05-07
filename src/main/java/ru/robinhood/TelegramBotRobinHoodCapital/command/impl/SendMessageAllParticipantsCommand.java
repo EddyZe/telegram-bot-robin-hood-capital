@@ -54,7 +54,7 @@ public class SendMessageAllParticipantsCommand implements Command {
             }
 
             String[] text = message.getText() == null ? message.getCaption().split(" ") : message.getText().split(" ");
-            if (text.length < 2) {
+            if (text.length < 2 || !message.hasVideo() || !message.hasPhoto()) {
                 String response = "Вы ввели не верный формат команды. Нажмите 'Команды администратора', чтобы посмотреть образец";
                 robbinHoodTelegramBot.sendMessage(
                         message.getChatId(),

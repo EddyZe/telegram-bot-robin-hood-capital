@@ -49,9 +49,9 @@ public class HistoryDepositCommand implements Command {
             String response = """
                     ID депозита: #%s
                    
-                    Сумма: %.2f USD
-                    Статус: %s
-                    Дата и время: %s"""
+                    <b>Сумма:</b> %.2f USD
+                    <b>Статус:</b> %s
+                    <b>Дата и время:</b> %s"""
                     .formatted(
                             deposit.getId(),
                             amount,

@@ -52,6 +52,14 @@ public class CreateStartCommandText implements Command {
                 return;
             }
 
+            if (message.getText().split(" ").length < 2) {
+                robbinHoodTelegramBot.sendMessage(
+                        chatId,
+                        "Не верный формат команды. Нажмите 'Команды администратора', чтобы посмотреть пример",
+                        replayKeyboardInitializer.initStartingKeyboard());
+                return;
+            }
+
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(pathHelloMsg, StandardCharsets.UTF_8))) {
                 bufferedWriter.write(message.getText().replaceAll(AdminCommand.CREATE_START_TEXT.toString(), "").trim());
                 robbinHoodTelegramBot.sendMessage(
