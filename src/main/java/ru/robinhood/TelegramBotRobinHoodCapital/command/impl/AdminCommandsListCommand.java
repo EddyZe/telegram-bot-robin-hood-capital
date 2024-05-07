@@ -71,7 +71,7 @@ public class AdminCommandsListCommand implements Command {
                             AdminCommand.ADMIN_SEND_PHOTO_ALL.toString(),
                             AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString(),
                             AdminCommand.CREATE_START_TEXT.toString(),
-                            AdminCommand.CREATE_START_VIDEO.toString(),
+                            AdminCommand.CREATE_START_PHOTO.toString(),
                             AdminCommand.CREATE_START_VIDEO.toString());
             robbinHoodTelegramBot.sendMessage(chatId, response, replayKeyboardInitializer.initAdminPanel());
         }
