@@ -118,4 +118,13 @@ public class MessageHelper {
         }
         return id;
     }
+
+    public static String generateMessage(String[] text) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 1; i < text.length; i++) {
+            stringBuilder.append(text[i].trim()).append(" ");
+        }
+        return stringBuilder.toString();
+    }
 }

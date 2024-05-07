@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AccountManagerCommand;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AdminCommand;
+import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AdminButton;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.SettingWalletCommands;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.WalletManagement;
 
@@ -91,9 +91,9 @@ public class InlineKeyboardInitializer {
     public InlineKeyboardMarkup initAdminInference() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        var showAll = createButton("Все", AdminCommand.SHOW_INFERENCE_ALL);
-        var showConfirmedInference = createButton("Подтвержденные", AdminCommand.SHOW_INFERENCE_TRUE);
-        var showInConfirmedInference = createButton("Ожидают обработки", AdminCommand.SHOW_INFERENCE_FALSE);
+        var showAll = createButton("Все", AdminButton.SHOW_INFERENCE_ALL);
+        var showConfirmedInference = createButton("Подтвержденные", AdminButton.SHOW_INFERENCE_TRUE);
+        var showInConfirmedInference = createButton("Ожидают обработки", AdminButton.SHOW_INFERENCE_FALSE);
         var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
 
         var rows = createListButton(showAll, showConfirmedInference, showInConfirmedInference, close);
@@ -105,8 +105,8 @@ public class InlineKeyboardInitializer {
     public InlineKeyboardMarkup initInference() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        var confirmInference = createButton("Отметить выполненым", AdminCommand.CONFIRM_INFERENCE);
-        var showNumberWallet = createButton("Показать адрес кошелька", AdminCommand.SHOW_WALLET_NUMBER);
+        var confirmInference = createButton("Отметить выполненым", AdminButton.CONFIRM_INFERENCE);
+        var showNumberWallet = createButton("Показать адрес кошелька", AdminButton.SHOW_WALLET_NUMBER);
         var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
 
         var rows = createListButton(confirmInference, showNumberWallet, close);
@@ -119,7 +119,7 @@ public class InlineKeyboardInitializer {
     public InlineKeyboardMarkup initGoBackInference() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        var goBack = createButton("Назад", AdminCommand.GO_BACK_INFERENCE);
+        var goBack = createButton("Назад", AdminButton.GO_BACK_INFERENCE);
         var rows = createListButton(goBack);
 
         inlineKeyboardMarkup.setKeyboard(rows);

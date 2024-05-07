@@ -18,6 +18,8 @@ import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.ReplayKeyboardIniti
 import java.util.List;
 import java.util.Optional;
 
+import static ru.robinhood.TelegramBotRobinHoodCapital.util.MessageHelper.generateMessage;
+
 
 @Component
 public class SendMessageAllParticipantsCommand implements Command {
@@ -97,14 +99,5 @@ public class SendMessageAllParticipantsCommand implements Command {
             sendPhoto.setPhoto(new InputFile(message.getPhoto().getFirst().getFileId()));
             robbinHoodTelegramBot.sendPhotoAll(sendPhoto);
         }
-    }
-
-    public String generateMessage(String[] text) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 1; i < text.length; i++) {
-            stringBuilder.append(text[i].trim()).append(" ");
-        }
-        return stringBuilder.toString();
     }
 }

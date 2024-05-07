@@ -33,6 +33,8 @@ public class CommandHandler {
     private final InferenceController inferenceController;
     private final AdminPanelCommand adminPanelCommand;
     private final WalletManagementCommand walletManagementCommand;
+    private final CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo;
+    private final CreateStartCommandText createStartCommandText;
     private final CreateWalletCommand createWalletCommand;
     private final HistoryDepositCommand historyDepositCommand;
     private final InferenceCommand inferenceCommand;
@@ -56,7 +58,7 @@ public class CommandHandler {
 
     public CommandHandler(StartCommand startCommand,
                           PersonalAccountCommand personalAccountCommand, InferenceController inferenceController, AdminPanelCommand adminPanelCommand,
-                          WalletManagementCommand walletManagementCommand,
+                          WalletManagementCommand walletManagementCommand, CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo, CreateStartCommandText createStartCommandText,
                           CreateWalletCommand createWalletCommand, HistoryDepositCommand historyDepositCommand, InferenceCommand inferenceCommand, HistoryInferenceCommand historyInferenceCommand,
                           CancelCommand cancelCommand,
                           @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
@@ -70,6 +72,8 @@ public class CommandHandler {
         this.inferenceController = inferenceController;
         this.adminPanelCommand = adminPanelCommand;
         this.walletManagementCommand = walletManagementCommand;
+        this.createStartCommandPhotoAndVideo = createStartCommandPhotoAndVideo;
+        this.createStartCommandText = createStartCommandText;
         this.createWalletCommand = createWalletCommand;
         this.historyDepositCommand = historyDepositCommand;
         this.inferenceCommand = inferenceCommand;
@@ -111,8 +115,12 @@ public class CommandHandler {
         if (message.getCaption() != null) {
             String text = message.getCaption();
 
-            if (text.contains("/sendvideo") || text.contains("/sendphoto")) {
+            if (text.contains(AdminCommand.ADMIN_SEND_VIDEO_ALL.toString()) ||
+                text.contains(AdminCommand.ADMIN_SEND_PHOTO_ALL.toString())) {
                 sendMessageAllParticipantsCommand.execute(message);
+            } else if (text.contains(AdminCommand.CREATE_START_PHOTO.toString()) ||
+                       text.contains(AdminCommand.CREATE_START_VIDEO.toString())) {
+                createStartCommandPhotoAndVideo.execute(message);
             }
         }
     }
@@ -202,7 +210,7 @@ public class CommandHandler {
             chatIdCurrentCommand.remove(message.getChatId());
             walletManagementCommand.execute(message);
 
-        } else if (callBackQuery.equals(AdminCommand.SHOW_WALLET_NUMBER.name())) {
+        } else if (callBackQuery.equals(AdminButton.SHOW_WALLET_NUMBER.name())) {
 
             Optional<Inference> inference = inferenceController.findById(
                     MessageHelper.findInferenceIdText(message.getText()));
@@ -222,7 +230,7 @@ public class CommandHandler {
 
             chatIdMessage.put(message.getChatId(), message);
 
-        } else if (callBackQuery.equals(AdminCommand.GO_BACK_INFERENCE.name())) {
+        } else if (callBackQuery.equals(AdminButton.GO_BACK_INFERENCE.name())) {
 
             robbinHoodTelegramBot.editMessage(
                     message,
@@ -235,10 +243,10 @@ public class CommandHandler {
 
             historyInferenceCommand.execute(message);
 
-        } else if (callBackQuery.equals(AdminCommand.CONFIRM_INFERENCE.name())) {
+        } else if (callBackQuery.equals(AdminButton.CONFIRM_INFERENCE.name())) {
 
             confimInferenceCommand.execute(message);
-        } else if (callBackQuery.equals(AdminCommand.SHOW_INFERENCE_ALL.name())) {
+        } else if (callBackQuery.equals(AdminButton.SHOW_INFERENCE_ALL.name())) {
             List<Inference> inferences = inferenceController.findByAll();
 
             if (inferences.isEmpty()) {
@@ -254,7 +262,7 @@ public class CommandHandler {
                             MessageHelper.inferenceInfo(inference),
                             inlineKeyboardInitializer.initInference()));
 
-        } else if (callBackQuery.equals(AdminCommand.SHOW_INFERENCE_FALSE.name())) {
+        } else if (callBackQuery.equals(AdminButton.SHOW_INFERENCE_FALSE.name())) {
             List<Inference> inferences = inferenceController.findByStatusFalse();
 
             if (inferences.isEmpty()) {
@@ -270,7 +278,7 @@ public class CommandHandler {
                             message.getChatId(),
                             MessageHelper.inferenceInfo(inference),
                             inlineKeyboardInitializer.initInference()));
-        } else if (callBackQuery.equals(AdminCommand.SHOW_INFERENCE_TRUE.name())) {
+        } else if (callBackQuery.equals(AdminButton.SHOW_INFERENCE_TRUE.name())) {
             List<Inference> inferences = inferenceController.findByStatusTrue();
 
             if(inferences.isEmpty()) {
@@ -314,9 +322,9 @@ public class CommandHandler {
                     message.getChatId(),
                     "🔢 Калькулятор 🔢\n\nВведите сумму в USD которую хотите внести или 'отмена' для отмены операции",
                     null);
-        } else if (text.contains("/authadmin")) {
+        } else if (text.contains(AdminCommand.AUTH_ADMIN.toString())) {
             authAdminCommand.execute(message);
-        } else if (text.equals("/adminpanel")) {
+        } else if (text.equals(AdminCommand.ADMIN_PANEL.toString())) {
             adminPanelCommand.execute(message);
         } else if (text.equals(AdminPanel.SHOW_INFERENCE.toString())) {
             Optional<User> userOptional = userController.findByChatId(message.getChatId());
@@ -358,9 +366,13 @@ public class CommandHandler {
             }
         } else if (text.equals(AdminPanel.ADMIN_COMMANDS.toString())) {
             adminCommandsListCommand.execute(message);
-        } else if (text.contains("/sendmessage")){
+        } else if (text.contains(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
             sendMessageAllParticipantsCommand.execute(message);
-        }else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
+        }else if (text.contains(AdminCommand.CREATE_START_TEXT.toString())) {
+            createStartCommandText.execute(message);
+        }
+
+        else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
             checkerCurrentCommand(message);
         }
 
