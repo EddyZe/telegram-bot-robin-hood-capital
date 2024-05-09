@@ -55,6 +55,7 @@ public class CommandHandler {
     private final WalletController walletController;
     private final HelpCommand helpCommand;
     private final AdminCommandsListCommand adminCommandsListCommand;
+    private final ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand;
     private final Map<Long, String> chatIdCurrentCommand = new HashMap<>();
     private final Map<Long, Message> chatIdMessage = new HashMap<>();
     private final String adminNumberWallet;
@@ -74,7 +75,7 @@ public class CommandHandler {
                           @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, AcceptEditNumberWalletCommand acceptEditNumberWalletCommand, ResponseOnHelpMessage responseOnHelpMessage, ShowProcessedEditWalletCommand showProcessedEditWalletCommand,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
-                          InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand,
+                          InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand,
                           @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
@@ -105,6 +106,7 @@ public class CommandHandler {
         this.walletController = walletController;
         this.helpCommand = helpCommand;
         this.adminCommandsListCommand = adminCommandsListCommand;
+        this.showHelpMessageUnprocessedCommand = showHelpMessageUnprocessedCommand;
         this.adminNumberWallet = adminNumberWallet;
         this.authAdminCommand = authAdminCommand;
         this.choiceEditWalletCommand = choiceEditWalletCommand;
@@ -136,11 +138,11 @@ public class CommandHandler {
         if (message.getCaption() != null) {
             String text = message.getCaption();
 
-            if (text.contains(AdminCommand.ADMIN_SEND_VIDEO_ALL.toString()) ||
-                text.contains(AdminCommand.ADMIN_SEND_PHOTO_ALL.toString())) {
+            if (text.startsWith(AdminCommand.ADMIN_SEND_VIDEO_ALL.toString()) ||
+                text.startsWith(AdminCommand.ADMIN_SEND_PHOTO_ALL.toString())) {
                 sendMessageAllParticipantsCommand.execute(message);
-            } else if (text.contains(AdminCommand.CREATE_START_PHOTO.toString()) ||
-                       text.contains(AdminCommand.CREATE_START_VIDEO.toString())) {
+            } else if (text.startsWith(AdminCommand.CREATE_START_PHOTO.toString()) ||
+                       text.startsWith(AdminCommand.CREATE_START_VIDEO.toString())) {
                 createStartCommandPhotoAndVideo.execute(message);
             }
         }
@@ -361,6 +363,8 @@ public class CommandHandler {
             showUnprocessedEditWalletCommand.execute(message);
         } else if (callBackQuery.equals(AdminButton.SHOW_PROCESSED_HELP_MESSAGE.name())) {
             showHelpMessageProcessedCommand.execute(message);
+        } else if (callBackQuery.equals(AdminButton.SHOW_UNPROCESSED_HELP_MESSAGE.name())) {
+            showHelpMessageUnprocessedCommand.execute(message);
         }
     }
 
@@ -451,22 +455,22 @@ public class CommandHandler {
             resetPreviousCommands(message);
             choiceEditWalletCommand.execute(message);
 
-        } else if (text.contains(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
+        } else if (text.startsWith(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
-        }else if (text.contains(AdminCommand.CREATE_START_TEXT.toString())) {
+        }else if (text.startsWith(AdminCommand.CREATE_START_TEXT.toString())) {
             resetPreviousCommands(message);
             createStartCommandText.execute(message);
-        } else if (text.contains(AdminCommand.ADMIN_SEND_VIDEO_ALL.toString())) {
+        } else if (text.startsWith(AdminCommand.ADMIN_SEND_VIDEO_ALL.toString())) {
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
-        } else if (text.contains(AdminCommand.ADMIN_SEND_PHOTO_ALL.toString())) {
+        } else if (text.startsWith(AdminCommand.ADMIN_SEND_PHOTO_ALL.toString())) {
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
-        } else if (text.contains(AdminCommand.CREATE_START_PHOTO.toString())) {
+        } else if (text.startsWith(AdminCommand.CREATE_START_PHOTO.toString())) {
             resetPreviousCommands(message);
             createStartCommandPhotoAndVideo.execute(message);
-        } else if (text.contains(AdminCommand.CREATE_START_VIDEO.toString())) {
+        } else if (text.startsWith(AdminCommand.CREATE_START_VIDEO.toString())) {
             resetPreviousCommands(message);
             createStartCommandPhotoAndVideo.execute(message);
         }else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
