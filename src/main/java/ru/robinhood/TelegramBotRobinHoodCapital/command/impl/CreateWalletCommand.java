@@ -11,7 +11,7 @@ import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.WalletController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
-import ru.robinhood.TelegramBotRobinHoodCapital.restclient.ApiTonkeeperClient;
+import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.UserState;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
@@ -24,7 +24,7 @@ public class CreateWalletCommand implements Command {
     private final WalletController walletController;
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
-    private final ApiTonkeeperClient apiTonkeeperClient;
+    private final TonkeeperClient tonkeeperClient;
     private final String adminWalletNumber;
 
 
@@ -32,13 +32,13 @@ public class CreateWalletCommand implements Command {
                                WalletController walletController,
                                @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
                                InlineKeyboardInitializer inlineKeyboardInitializer,
-                               ApiTonkeeperClient apiTonkeeperClient,
+                               TonkeeperClient tonkeeperClient,
                                @Value("${tonkeeper.url.admin.wallet}") String adminWalletNumber) {
         this.userController = userController;
         this.walletController = walletController;
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
-        this.apiTonkeeperClient = apiTonkeeperClient;
+        this.tonkeeperClient = tonkeeperClient;
         this.adminWalletNumber = adminWalletNumber;
     }
 
@@ -63,7 +63,7 @@ public class CreateWalletCommand implements Command {
                     .numberWallet(walletAddress)
                     .build();
 
-            tonkreeperBalanceWallet = apiTonkeeperClient.getTonKeeperWalletBalance(wallet);
+            tonkreeperBalanceWallet = tonkeeperClient.getTonKeeperWalletBalance(wallet);
         } catch (HttpClientErrorException e) {
             robbinHoodTelegramBot.editMessage(message,
                     "Упс! Возможно вы ввели не валидный адрес кошелька! Попробуй снова или введи 'отмена'",
@@ -117,7 +117,7 @@ public class CreateWalletCommand implements Command {
     }
 
     private String generateResponse(String tonkreeperBalanceWallet) {
-        long tonPrice = apiTonkeeperClient.getTonPrice();
+        long tonPrice = tonkeeperClient.getTonPrice();
         long amount = Long.parseLong(tonkreeperBalanceWallet);
 
         amount *= tonPrice;

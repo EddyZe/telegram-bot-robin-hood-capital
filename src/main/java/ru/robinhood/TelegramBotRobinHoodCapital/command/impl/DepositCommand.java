@@ -14,7 +14,7 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Deposit;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.Transaction;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.Transactions;
-import ru.robinhood.TelegramBotRobinHoodCapital.restclient.ApiTonkeeperClient;
+import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class DepositCommand implements Command {
 
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
 
-    private final ApiTonkeeperClient apiTonkeeperClient;
+    private final TonkeeperClient tonkeeperClient;
     private final DepositController depositController;
     private final UserController userController;
     private final String walletNumber;
@@ -34,11 +34,11 @@ public class DepositCommand implements Command {
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
 
 
-    public DepositCommand(@Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, ApiTonkeeperClient apiTonkeeperClient, DepositController depositController, UserController userController,
+    public DepositCommand(@Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, TonkeeperClient tonkeeperClient, DepositController depositController, UserController userController,
                           @Value("${tonkeeper.url.admin.wallet}") String walletNumber,
                           @Value("${telegram.bot.QR.code.filename}") String qrCodeWallet, InlineKeyboardInitializer inlineKeyboardInitializer) {
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
-        this.apiTonkeeperClient = apiTonkeeperClient;
+        this.tonkeeperClient = tonkeeperClient;
         this.depositController = depositController;
         this.userController = userController;
         this.walletNumber = walletNumber;
@@ -77,8 +77,8 @@ public class DepositCommand implements Command {
 
     @Scheduled(cron = "0 * * * * *")
     public void createDeposit() {
-        Transactions transactions = apiTonkeeperClient.getTransactions();
-        long tonPrice = apiTonkeeperClient.getTonPrice();
+        Transactions transactions = tonkeeperClient.getTransactions();
+        long tonPrice = tonkeeperClient.getTonPrice();
 
         List<Transaction> transactionList = transactions.getTransactions();
 

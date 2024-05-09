@@ -1,6 +1,7 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.util;
 
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Topic;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
 
@@ -127,5 +128,15 @@ public class MessageHelper {
             stringBuilder.append(text[i].trim()).append(" ");
         }
         return stringBuilder.toString();
+    }
+
+    public static String generateTopic(Topic topic) {
+        return """
+                <b>Обращение</b>🆘
+                
+                ID: #%s
+                Отправитель: %s
+                Вопрос: %s
+                """.formatted(topic.getId(), topic.getOwner().getName(), topic.getProblem());
     }
 }

@@ -1,9 +1,8 @@
-package ru.robinhood.TelegramBotRobinHoodCapital.restclient;
+package ru.robinhood.TelegramBotRobinHoodCapital.client;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import org.hibernate.engine.jdbc.ReaderInputStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,17 +10,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.Transaction;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.Transactions;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Component
-public class ApiTonkeeperClient {
+public class TonkeeperClient {
 
     private final RestTemplate restTemplate;
 
@@ -31,11 +24,11 @@ public class ApiTonkeeperClient {
     private final String urlAdminWallet;
 
 
-    public ApiTonkeeperClient(RestTemplate restTemplate,
-                              @Value("${tonkeeper.url.api}") String apiUrl,
-                              @Value("${tonkeeper.token.api}") String apiToken,
-                              ObjectMapper objectMapper,
-                              @Value("${tonkeeper.url.admin.wallet}") String urlAdminWallet) {
+    public TonkeeperClient(RestTemplate restTemplate,
+                           @Value("${tonkeeper.url.api}") String apiUrl,
+                           @Value("${tonkeeper.token.api}") String apiToken,
+                           ObjectMapper objectMapper,
+                           @Value("${tonkeeper.url.admin.wallet}") String urlAdminWallet) {
         this.restTemplate = restTemplate;
         this.apiUrl = apiUrl;
         this.apiToken = apiToken;

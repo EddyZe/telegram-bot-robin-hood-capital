@@ -54,4 +54,7 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "owner")
+    private List<Topic> topics;
+
 }

@@ -3,10 +3,7 @@ package ru.robinhood.TelegramBotRobinHoodCapital.util.keybord;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AccountManagerCommand;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AdminButton;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.SettingWalletCommands;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.WalletManagement;
+import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -130,6 +127,33 @@ public class InlineKeyboardInitializer {
 
         var goBack = createButton("Назад", WalletManagement.GO_BACK_INFERENCE_AND_DEPOSIT);
         var rows = createListButton(goBack);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initHelpCommand() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var sendMessageAdmin = createButton("Написать обращение в поддержку",
+                HelpCommands.SEND_MESSAGE_ADMIN);
+        var editNumberWallet = createButton("Подать заявку на именение адреса кошелька",
+                HelpCommands.EDIT_NUMBER_WALLET);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+        var rows = createListButton(sendMessageAdmin, editNumberWallet, close);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initAdminResponseHelpMessage() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var responseButton = createButton("Ответить", AdminButton.RESPONSE_HELP_MESSAGE);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+
+        var rows = createListButton(responseButton, close);
 
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;

@@ -16,7 +16,6 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.MessageHelper;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.*;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.AdminPanel;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.ReplayKeyboardInitializer;
 
@@ -47,11 +46,13 @@ public class CommandHandler {
     private final UserController userController;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
     private final WalletController walletController;
+    private final HelpCommand helpCommand;
     private final AdminCommandsListCommand adminCommandsListCommand;
     private final Map<Long, String> chatIdCurrentCommand = new HashMap<>();
     private final Map<Long, Message> chatIdMessage = new HashMap<>();
     private final String adminNumberWallet;
     private final AuthAdminCommand authAdminCommand;
+    private final SendMessageAdminCommand sendMessageAdminCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
@@ -64,8 +65,8 @@ public class CommandHandler {
                           @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, UserController userController,
-                          InlineKeyboardInitializer inlineKeyboardInitializer, WalletController walletController, AdminCommandsListCommand adminCommandsListCommand,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          InlineKeyboardInitializer inlineKeyboardInitializer, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand,
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, SendMessageAdminCommand sendMessageAdminCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -86,9 +87,11 @@ public class CommandHandler {
         this.userController = userController;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
         this.walletController = walletController;
+        this.helpCommand = helpCommand;
         this.adminCommandsListCommand = adminCommandsListCommand;
         this.adminNumberWallet = adminNumberWallet;
         this.authAdminCommand = authAdminCommand;
+        this.sendMessageAdminCommand = sendMessageAdminCommand;
         this.confimInferenceCommand = confimInferenceCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
@@ -294,6 +297,14 @@ public class CommandHandler {
                             MessageHelper.inferenceInfo(inference),
                             inlineKeyboardInitializer.initInference()
                     ));
+        } else if (callBackQuery.equals(HelpCommands.SEND_MESSAGE_ADMIN.name())) {
+            chatIdCurrentCommand.put(message.getChatId(), HelpCommands.SEND_MESSAGE_ADMIN.name());
+
+            robbinHoodTelegramBot.sendMessage(
+                    message.getChatId(),
+                    "Напишите ваш вопрос. Мы ответим как можно быстрее",
+                    null);
+
         }
     }
 
@@ -372,6 +383,10 @@ public class CommandHandler {
         } else if (text.equals(AdminPanel.ADMIN_COMMANDS.toString())) {
             resetPreviousCommands(message);
             adminCommandsListCommand.execute(message);
+
+        } else if (text.equals(MenuCommand.HELP.toString())) {
+            resetPreviousCommands(message);
+            helpCommand.execute(message);
         } else if (text.contains(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
@@ -429,6 +444,8 @@ public class CommandHandler {
             }
 
             inferenceCommand.execute(message);
+        } else if (value.equals(HelpCommands.SEND_MESSAGE_ADMIN.name())) {
+            sendMessageAdminCommand.execute(message);
         }
     }
 }

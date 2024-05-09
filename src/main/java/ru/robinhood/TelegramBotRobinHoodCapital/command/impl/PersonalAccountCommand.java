@@ -8,7 +8,7 @@ import ru.robinhood.TelegramBotRobinHoodCapital.command.Command;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
-import ru.robinhood.TelegramBotRobinHoodCapital.restclient.ApiTonkeeperClient;
+import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.MessageHelper;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.UserState;
@@ -24,16 +24,16 @@ public class PersonalAccountCommand implements Command {
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
     private final UserController userController;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
-    private final ApiTonkeeperClient apiTonkeeperClient;
+    private final TonkeeperClient tonkeeperClient;
 
     public PersonalAccountCommand(@Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
                                   UserController userController,
-                                  InlineKeyboardInitializer inlineKeyboardInitializer, ApiTonkeeperClient apiTonkeeperClient) {
+                                  InlineKeyboardInitializer inlineKeyboardInitializer, TonkeeperClient tonkeeperClient) {
 
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
         this.userController = userController;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
-        this.apiTonkeeperClient = apiTonkeeperClient;
+        this.tonkeeperClient = tonkeeperClient;
     }
 
     @Override
@@ -73,8 +73,8 @@ public class PersonalAccountCommand implements Command {
         if (wallet == null) {
             return MessageHelper.infoAccountNotWallet(user);
         } else {
-            long tonPrice = apiTonkeeperClient.getTonPrice();
-            long amount = Long.parseLong(apiTonkeeperClient.getTonKeeperWalletBalance(wallet));
+            long tonPrice = tonkeeperClient.getTonPrice();
+            long amount = Long.parseLong(tonkeeperClient.getTonKeeperWalletBalance(wallet));
 
             amount *= tonPrice;
 
