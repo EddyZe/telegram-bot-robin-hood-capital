@@ -50,7 +50,7 @@ public class DepositCommand implements Command {
     @Override
     public void execute(Message message) {
         String response = """
-                💵 <b>Пополнение счета</b>💵
+                💵 Пополнение счета 💵
                 
                 Код для пополнения баланса - %s
                 

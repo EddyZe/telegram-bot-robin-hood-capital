@@ -44,7 +44,7 @@ public class StartCommand implements Command {
                 if (currentString.startsWith("method_name_"))
                     methodName = currentString;
                 else
-                    response.append(currentString);
+                    response.append(currentString).append("\n");
             }
 
             sendHelloMessage(message, methodName, response);

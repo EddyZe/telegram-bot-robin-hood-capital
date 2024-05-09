@@ -206,7 +206,7 @@ public class InlineKeyboardInitializer {
     public InlineKeyboardMarkup initChoiceHelpMessage() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        var processedMessage = createButton("Обработаные", AdminButton.SHOW_PROCESSED_HELP_MESSAGE);
+        var processedMessage = createButton("Обработанные", AdminButton.SHOW_PROCESSED_HELP_MESSAGE);
         var unprocessedMessage = createButton("Требуют ответов", AdminButton.SHOW_UNPROCESSED_HELP_MESSAGE);
         var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
 
@@ -219,7 +219,7 @@ public class InlineKeyboardInitializer {
     public InlineKeyboardMarkup initChoiceEditWallet() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        var processedEditWallet = createButton("Одобреные", AdminButton.SHOW_PROCESSED_EDIT_WALLET);
+        var processedEditWallet = createButton("Одобренные", AdminButton.SHOW_PROCESSED_EDIT_WALLET);
         var unprocessedEditWallet = createButton("Ждут одобрения", AdminButton.SHOW_UNPROCESSED_EDIT_WALLET);
         var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
 

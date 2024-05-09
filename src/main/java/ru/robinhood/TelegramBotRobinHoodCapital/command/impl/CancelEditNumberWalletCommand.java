@@ -56,12 +56,12 @@ public class CancelEditNumberWalletCommand implements Command {
 
         robbinHoodTelegramBot.sendMessage(
                 userChatId,
-                "Ваша заявка на именение адреса кошелька отменена!",
+                "Ваша заявка на изменение адреса кошелька была отменена!",
                 null);
 
         robbinHoodTelegramBot.editMessage(
                 message,
-                "Заявка отменена!",
+                "Вы отклонили заявку #%s.".formatted(editNumberWallet.get().getId()),
                 null);
     }
 }

@@ -164,9 +164,15 @@ public class CommandHandler {
         } else if (callBackQuery.equals(SettingWalletCommands.LINK_WALLET.name())) {
 
             if (walletController.findByOwnerChatId(message.getChatId()).isPresent()) {
+                String response = """
+                        💰 <b>Настройка кошелька</b> 💰
+                        
+                        Вы уже привязали кошелек! Обратитесь к администратору!
+                        
+                        Чтобы подать заявку на замену кошелька, перейдите в помощь и оставьте заявку""";
                 robbinHoodTelegramBot.editMessage(
                         message,
-                        "💰 <b>Настройка кошелька</b> 💰\n\nВы уже привязали кошелек! Обратитесь к администратору!",
+                        response,
                         inlineKeyboardInitializer.initGoBackSettingWallet()
                 );
                 return;
