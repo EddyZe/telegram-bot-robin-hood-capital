@@ -32,6 +32,7 @@ public class CommandHandler {
     private final InferenceController inferenceController;
     private final AdminPanelCommand adminPanelCommand;
     private final WalletManagementCommand walletManagementCommand;
+    private final ShowUnprocessedEditWalletCommand showUnprocessedEditWalletCommand;
     private final CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo;
     private final CreateStartCommandText createStartCommandText;
     private final CreateWalletCommand createWalletCommand;
@@ -43,6 +44,7 @@ public class CommandHandler {
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
     private final AcceptEditNumberWalletCommand acceptEditNumberWalletCommand;
     private final ResponseOnHelpMessage responseOnHelpMessage;
+    private final ShowProcessedEditWalletCommand showProcessedEditWalletCommand;
     private final CalculateCommand calculateCommand;
     private final DepositCommand depositCommand;
     private final SettingWalletCommand settingWalletCommand;
@@ -59,26 +61,28 @@ public class CommandHandler {
     private final AuthAdminCommand authAdminCommand;
     private final ChoiceEditWalletCommand choiceEditWalletCommand;
     private final SendMessageAdminCommand sendMessageAdminCommand;
+    private final ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
     public CommandHandler(StartCommand startCommand,
                           PersonalAccountCommand personalAccountCommand, InferenceController inferenceController, AdminPanelCommand adminPanelCommand,
-                          WalletManagementCommand walletManagementCommand, CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo, CreateStartCommandText createStartCommandText,
+                          WalletManagementCommand walletManagementCommand, ShowUnprocessedEditWalletCommand showUnprocessedEditWalletCommand, CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo, CreateStartCommandText createStartCommandText,
                           CreateWalletCommand createWalletCommand, EditNumberWalletCommand editNumberWalletCommand, HistoryDepositCommand historyDepositCommand, InferenceCommand inferenceCommand, HistoryInferenceCommand historyInferenceCommand,
                           CancelCommand cancelCommand,
-                          @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, AcceptEditNumberWalletCommand acceptEditNumberWalletCommand, ResponseOnHelpMessage responseOnHelpMessage,
+                          @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, AcceptEditNumberWalletCommand acceptEditNumberWalletCommand, ResponseOnHelpMessage responseOnHelpMessage, ShowProcessedEditWalletCommand showProcessedEditWalletCommand,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
                           InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
         this.inferenceController = inferenceController;
         this.adminPanelCommand = adminPanelCommand;
         this.walletManagementCommand = walletManagementCommand;
+        this.showUnprocessedEditWalletCommand = showUnprocessedEditWalletCommand;
         this.createStartCommandPhotoAndVideo = createStartCommandPhotoAndVideo;
         this.createStartCommandText = createStartCommandText;
         this.createWalletCommand = createWalletCommand;
@@ -90,6 +94,7 @@ public class CommandHandler {
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
         this.acceptEditNumberWalletCommand = acceptEditNumberWalletCommand;
         this.responseOnHelpMessage = responseOnHelpMessage;
+        this.showProcessedEditWalletCommand = showProcessedEditWalletCommand;
         this.calculateCommand = calculateCommand;
         this.depositCommand = depositCommand;
         this.settingWalletCommand = settingWalletCommand;
@@ -104,6 +109,7 @@ public class CommandHandler {
         this.authAdminCommand = authAdminCommand;
         this.choiceEditWalletCommand = choiceEditWalletCommand;
         this.sendMessageAdminCommand = sendMessageAdminCommand;
+        this.showHelpMessageProcessedCommand = showHelpMessageProcessedCommand;
         this.confimInferenceCommand = confimInferenceCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
@@ -344,10 +350,17 @@ public class CommandHandler {
                     message,
                     "Отправьте, новый адрес кошелька",
                     inlineKeyboardInitializer.initGoBackHelpCommand());
+
         } else if (callBackQuery.equals(AdminButton.EDIT_WALLET_NUMBER.name())) {
             acceptEditNumberWalletCommand.execute(message);
         } else if (callBackQuery.equals(AdminButton.CANCEL_EDIT_WALLET_NUMBER.name())) {
             cancelEditNumberWalletCommand.execute(message);
+        } else if (callBackQuery.equals(AdminButton.SHOW_PROCESSED_EDIT_WALLET.name())) {
+            showProcessedEditWalletCommand.execute(message);
+        } else if (callBackQuery.equals(AdminButton.SHOW_UNPROCESSED_EDIT_WALLET.name())) {
+            showUnprocessedEditWalletCommand.execute(message);
+        } else if (callBackQuery.equals(AdminButton.SHOW_PROCESSED_HELP_MESSAGE.name())) {
+            showHelpMessageProcessedCommand.execute(message);
         }
     }
 

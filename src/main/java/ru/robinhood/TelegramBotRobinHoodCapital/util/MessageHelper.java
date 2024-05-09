@@ -129,13 +129,15 @@ public class MessageHelper {
     }
 
     public static String generateTopic(Topic topic) {
+        String status = topic.isStatus() ? "✅" : "Ждет ответа ❌";
         return """
                 <b>Обращение</b>🆘
                 
                 ID: #%s
                 Отправитель: %s
+                Статус: %s
                 Вопрос: %s
-                """.formatted(topic.getId(), topic.getOwner().getName(), topic.getProblem());
+                """.formatted(topic.getId(), topic.getOwner().getName(), status, topic.getProblem());
     }
 
     public static String generateEditNumberWallet(EditNumberWallet editNumberWallet) {
@@ -143,10 +145,21 @@ public class MessageHelper {
                 <b> Заявка на изменение адреса кошелька </b> 💳
                 
                 ID: #%s
-                
                 %s просит изменить адрес кошелька на: %s"""
                 .formatted(editNumberWallet.getId(),
                         editNumberWallet.getCurrentWallet().getOwner().getName(),
                         editNumberWallet.getNewNumberWallet());
+    }
+
+    public static String generateProcessedEditWallet(EditNumberWallet editNumberWallet) {
+        return """
+                <b> Заявка на изменение адреса кошелька </b> 💳
+                
+                ID: #%s
+                Пользователь %s изменил адрес кошелька на %s""".formatted(
+                        editNumberWallet.getId(),
+                        editNumberWallet.getCurrentWallet().getOwner().getName(),
+                        editNumberWallet.getNewNumberWallet()
+        );
     }
 }
