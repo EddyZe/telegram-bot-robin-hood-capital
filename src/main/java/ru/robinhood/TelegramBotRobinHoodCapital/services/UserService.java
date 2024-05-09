@@ -3,6 +3,7 @@ package ru.robinhood.TelegramBotRobinHoodCapital.services;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.repositories.UserRepository;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
@@ -21,6 +22,7 @@ public class UserService {
 
 
     @CacheEvict(value = "Users", key = "#user.chatId")
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -39,4 +41,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
 }

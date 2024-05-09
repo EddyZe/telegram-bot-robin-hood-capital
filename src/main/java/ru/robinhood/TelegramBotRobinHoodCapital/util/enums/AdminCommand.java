@@ -9,7 +9,9 @@ public enum AdminCommand {
     ADMIN_SEND_MESSAGE_ALL("/sendmessage"),
     CREATE_START_TEXT("/create_start_text"),
     CREATE_START_PHOTO("/create_start_photo"),
-    CREATE_START_VIDEO("/create_start_video");
+    CREATE_START_VIDEO("/create_start_video"),
+    SET_OPERATOR("/setmoderator"),
+    OPERATOR_PANEL("/oppanel");
 
 
 

@@ -11,7 +11,6 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Topic;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.MessageHelper;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
 import java.util.Optional;
 
@@ -22,15 +21,13 @@ public class ResponseOnHelpMessage implements Command {
     private final TopicController topicController;
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
     private final UserController userController;
-    private final InlineKeyboardInitializer inlineKeyboardInitializer;
 
     public ResponseOnHelpMessage(TopicController topicController,
                                  @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
-                                 UserController userController, InlineKeyboardInitializer inlineKeyboardInitializer) {
+                                 UserController userController) {
         this.topicController = topicController;
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
         this.userController = userController;
-        this.inlineKeyboardInitializer = inlineKeyboardInitializer;
     }
 
 
@@ -47,10 +44,10 @@ public class ResponseOnHelpMessage implements Command {
 
         User user = userOptional.get();
 
-        if (user.getRole() != Role.ADMIN) {
+        if (user.getRole() == Role.USER) {
             robbinHoodTelegramBot.sendMessage(
                     chatId,
-                    "Команда доступна только администраторам!",
+                    "Команда доступна только администраторам и операторам!",
                     null);
             return;
         }
@@ -64,8 +61,9 @@ public class ResponseOnHelpMessage implements Command {
         if (topic.isStatus()) {
             robbinHoodTelegramBot.editMessage(
                     message,
-                    "Обращение уже обраотано!",
-                    inlineKeyboardInitializer.initGoBackHelpMessage());
+                    "%s\n Обращение уже обработано другим админисратором!".formatted(MessageHelper.generateTopic(topic)),
+                    null);
+            return;
         }
 
         String responseOwnerTopic = generateResponseOwnerTopic(message, topic, user);

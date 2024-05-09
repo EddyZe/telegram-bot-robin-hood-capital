@@ -97,6 +97,7 @@ public class StartCommand implements Command {
 
         sendVideo.setVideo(new InputFile(videoId));
         sendVideo.setChatId(message.getChatId());
+        sendVideo.setReplyMarkup(replayKeyboardInitializer.initStartingKeyboard());
 
         robbinHoodTelegramBot.sendVideoAll(sendVideo);
     }
@@ -109,6 +110,7 @@ public class StartCommand implements Command {
                 .trim());
         sendPhoto.setPhoto(new InputFile(photoId));
         sendPhoto.setChatId(message.getChatId());
+        sendPhoto.setReplyMarkup(replayKeyboardInitializer.initStartingKeyboard());
 
         robbinHoodTelegramBot.sendPhotoAll(sendPhoto);
     }

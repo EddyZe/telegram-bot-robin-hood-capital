@@ -8,24 +8,24 @@ import ru.robinhood.TelegramBotRobinHoodCapital.command.Command;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
-import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
+import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.ReplayKeyboardInitializer;
 
 import java.util.Optional;
 
 
 @Component
-public class ChoiceHelpMessageCommand implements Command {
+public class OpenOperatorPanelCommand implements Command {
 
     private final UserController userController;
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
-    private final InlineKeyboardInitializer inlineKeyboardInitializer;
+    private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
-
-    public ChoiceHelpMessageCommand(UserController userController,
-                                    @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, InlineKeyboardInitializer inlineKeyboardInitializer) {
+    public OpenOperatorPanelCommand(UserController userController,
+                                    @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
+                                    ReplayKeyboardInitializer replayKeyboardInitializer) {
         this.userController = userController;
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
-        this.inlineKeyboardInitializer = inlineKeyboardInitializer;
+        this.replayKeyboardInitializer = replayKeyboardInitializer;
     }
 
     @Override
@@ -37,17 +37,18 @@ public class ChoiceHelpMessageCommand implements Command {
 
         User user = userOptional.get();
 
-        if (user.getRole() == Role.USER) {
+        if (user.getRole() != Role.MODERATOR) {
             robbinHoodTelegramBot.sendMessage(
-                    user.getChatId(),
-                    "Команда доступна только администраторам и операторам!",
+                    message.getChatId(),
+                    "Команда доступна только модераторам!",
                     null);
+
             return;
         }
 
         robbinHoodTelegramBot.sendMessage(
                 message.getChatId(),
-                "<b>Обращения</b> 🆘\n\nВыберите какие обращение хотите посмотреть",
-                inlineKeyboardInitializer.initChoiceHelpMessage());
+                "Вы открыли панель модератора",
+                replayKeyboardInitializer.initOperatorPanel());
     }
 }

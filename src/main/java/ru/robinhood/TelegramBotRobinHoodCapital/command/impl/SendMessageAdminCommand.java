@@ -43,6 +43,7 @@ public class SendMessageAdminCommand implements Command {
             return;
 
         List<User> admins = userController.findByRole(Role.ADMIN);
+        List<User> operators = userController.findByRole(Role.MODERATOR);
         User user = userOptional.get();
 
         Topic topic = Topic.builder()
@@ -63,6 +64,12 @@ public class SendMessageAdminCommand implements Command {
         if (!admins.isEmpty())
             admins.forEach(admin -> robbinHoodTelegramBot.sendMessage(
                     admin.getChatId(),
+                    MessageHelper.generateTopic(topic),
+                    inlineKeyboardInitializer.initAdminResponseHelpMessage()));
+
+        if (!operators.isEmpty())
+            operators.forEach(operator -> robbinHoodTelegramBot.sendMessage(
+                    operator.getChatId(),
                     MessageHelper.generateTopic(topic),
                     inlineKeyboardInitializer.initAdminResponseHelpMessage()));
     }

@@ -62,8 +62,10 @@ public class CommandHandler {
     private final AuthAdminCommand authAdminCommand;
     private final ChoiceEditWalletCommand choiceEditWalletCommand;
     private final SendMessageAdminCommand sendMessageAdminCommand;
+    private final SetOperatorCommand setOperatorCommand;
     private final ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
+    private final OpenOperatorPanelCommand openOperatorPanelCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
@@ -76,7 +78,7 @@ public class CommandHandler {
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
                           InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -111,8 +113,10 @@ public class CommandHandler {
         this.authAdminCommand = authAdminCommand;
         this.choiceEditWalletCommand = choiceEditWalletCommand;
         this.sendMessageAdminCommand = sendMessageAdminCommand;
+        this.setOperatorCommand = setOperatorCommand;
         this.showHelpMessageProcessedCommand = showHelpMessageProcessedCommand;
         this.confimInferenceCommand = confimInferenceCommand;
+        this.openOperatorPanelCommand = openOperatorPanelCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
     }
@@ -336,6 +340,7 @@ public class CommandHandler {
             helpCommand.execute(message);
 
         }else if (callBackQuery.equals(AdminButton.RESPONSE_HELP_MESSAGE.name())) {
+
             chatIdMessage.put(message.getChatId(), message);
             chatIdCurrentCommand.put(message.getChatId(), AdminButton.RESPONSE_HELP_MESSAGE.name());
 
@@ -430,16 +435,18 @@ public class CommandHandler {
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-                if (user.getRole() != Role.ADMIN) {
+                if (user.getRole() == Role.USER) {
                     robbinHoodTelegramBot.sendMessage(
                             message.getChatId(),
-                            "Команда доступна только администраторам!",
+                            "Команда доступна только администраторам и операторам!",
                             null
                     );
                     return;
                 }
 
-                String response = "Чтобы вернуть в панель адменистратора введите /adminpanel";
+                String response = user.getRole() == Role.ADMIN ?
+                        "Чтобы вернуться в панель адменистратора введите %s".formatted(AdminCommand.ADMIN_PANEL) :
+                        "Чтобы вернуться в панель оператора введите %s".formatted(AdminCommand.OPERATOR_PANEL);
 
                 robbinHoodTelegramBot.sendMessage(
                         message.getChatId(),
@@ -461,6 +468,9 @@ public class CommandHandler {
             resetPreviousCommands(message);
             choiceEditWalletCommand.execute(message);
 
+        } else if (text.equals(AdminCommand.OPERATOR_PANEL.toString())) {
+            resetPreviousCommands(message);
+            openOperatorPanelCommand.execute(message);
         } else if (text.startsWith(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
@@ -479,7 +489,10 @@ public class CommandHandler {
         } else if (text.startsWith(AdminCommand.CREATE_START_VIDEO.toString())) {
             resetPreviousCommands(message);
             createStartCommandPhotoAndVideo.execute(message);
-        }else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
+        } else if (text.startsWith(AdminCommand.SET_OPERATOR.toString())) {
+            resetPreviousCommands(message);
+            setOperatorCommand.execute(message);
+        } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
             checkerCurrentCommand(message);
         }
     }
@@ -524,4 +537,3 @@ public class CommandHandler {
         }
     }
 }
-

@@ -33,4 +33,7 @@ public class UserController {
         return userService.findByAll();
     }
 
+    public Optional<User> findById(Long userId) {
+        return userService.findById(userId);
+    }
 }
