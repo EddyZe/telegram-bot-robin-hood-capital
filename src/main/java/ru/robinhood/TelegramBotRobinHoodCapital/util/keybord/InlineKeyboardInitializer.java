@@ -137,12 +137,33 @@ public class InlineKeyboardInitializer {
 
         var sendMessageAdmin = createButton("Написать обращение в поддержку",
                 HelpCommands.SEND_MESSAGE_ADMIN);
-        var editNumberWallet = createButton("Подать заявку на именение адреса кошелька",
+        var editNumberWallet = createButton("Подать заявку на изменение адреса кошелька",
                 HelpCommands.EDIT_NUMBER_WALLET);
         var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
         var rows = createListButton(sendMessageAdmin, editNumberWallet, close);
 
         inlineKeyboardMarkup.setKeyboard(rows);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initGoBackHelpCommand() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var goBack = createButton("Назад", HelpCommands.GO_BACK_HELP_MENU);
+        var row = createListButton(goBack);
+
+        inlineKeyboardMarkup.setKeyboard(row);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initCloseCalculate() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+        var row = createListButton(close);
+        inlineKeyboardMarkup.setKeyboard(row);
 
         return inlineKeyboardMarkup;
     }
@@ -156,6 +177,56 @@ public class InlineKeyboardInitializer {
         var rows = createListButton(responseButton, close);
 
         inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initGoBackHelpMessage() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var goBack = createButton("Назад", AdminButton.GO_BACK_TOPIC_MESSAGES);
+        var row = createListButton(goBack);
+
+        inlineKeyboardMarkup.setKeyboard(row);
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initEditNumberWalletAdmin() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var edit = createButton("Изменить", AdminButton.EDIT_WALLET_NUMBER);
+        var cancel = createButton("Отправить отказ", AdminButton.CANCEL_EDIT_WALLET_NUMBER);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+
+        var rows = createListButton(edit, cancel, close);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initChoiceHelpMessage() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var processedMessage = createButton("Обработаные", AdminButton.SHOW_PROCESSED_HELP_MESSAGE);
+        var unprocessedMessage = createButton("Требуют ответов", AdminButton.SHOW_UNPROCESSED_HELP_MESSAGE);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+
+        var rows = createListButton(processedMessage, unprocessedMessage, close);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initChoiceEditWallet() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var processedEditWallet = createButton("Одобреные", AdminButton.SHOW_PROCESSED_EDIT_WALLET);
+        var unprocessedEditWallet = createButton("Ждут одобрения", AdminButton.SHOW_UNPROCESSED_EDIT_WALLET);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+
+        var rows = createListButton(processedEditWallet, unprocessedEditWallet, close);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+
         return inlineKeyboardMarkup;
     }
 

@@ -1,9 +1,6 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.util;
 
-import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Inference;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Topic;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.*;
 
 import java.time.format.DateTimeFormatter;
 
@@ -110,12 +107,13 @@ public class MessageHelper {
                     status);
     }
 
-    public static Long findInferenceIdText(String text) {
+    public static Long findIdText(String text) {
         String[] lines = text.split("\n");
         Long id = null;
         for (String str : lines) {
             if (str.startsWith("ID")) {
                 id = Long.parseLong(str.split(":")[1].trim().replaceAll("#", "").trim());
+                break;
             }
         }
         return id;
@@ -138,5 +136,17 @@ public class MessageHelper {
                 Отправитель: %s
                 Вопрос: %s
                 """.formatted(topic.getId(), topic.getOwner().getName(), topic.getProblem());
+    }
+
+    public static String generateEditNumberWallet(EditNumberWallet editNumberWallet) {
+        return """
+                <b> Заявка на изменение адреса кошелька </b> 💳
+                
+                ID: #%s
+                
+                %s просит изменить адрес кошелька на: %s"""
+                .formatted(editNumberWallet.getId(),
+                        editNumberWallet.getCurrentWallet().getOwner().getName(),
+                        editNumberWallet.getNewNumberWallet());
     }
 }

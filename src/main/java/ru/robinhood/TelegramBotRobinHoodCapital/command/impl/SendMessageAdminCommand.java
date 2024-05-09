@@ -55,15 +55,15 @@ public class SendMessageAdminCommand implements Command {
         topicController.save(topic);
         userController.save(user);
 
+        robbinHoodTelegramBot.sendMessage(
+                chatId,
+                "Спасибо за обращение. Мы ответим как можно быстрее!",
+                null);
+
         if (!admins.isEmpty())
             admins.forEach(admin -> robbinHoodTelegramBot.sendMessage(
                     admin.getChatId(),
                     MessageHelper.generateTopic(topic),
                     inlineKeyboardInitializer.initAdminResponseHelpMessage()));
-
-        robbinHoodTelegramBot.sendMessage(
-                chatId,
-                "Мы ответим на ваш вопрос как можно скорее",
-                null);
     }
 }

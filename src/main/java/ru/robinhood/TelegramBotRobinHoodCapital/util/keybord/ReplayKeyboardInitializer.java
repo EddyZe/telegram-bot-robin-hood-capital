@@ -44,6 +44,7 @@ public class ReplayKeyboardInitializer {
 
         var rows = createRows(
                 createdRow(AdminPanel.SHOW_INFERENCE.toString(), AdminPanel.ADMIN_COMMANDS.toString()),
+                createdRow(AdminPanel.SHOW_EDIT_WALLET_NUMBER.toString(), AdminPanel.SHOW_HELP_MESSAGE.toString()),
                 createdRow(AdminPanel.GO_BACK_MENU_COMMAND.toString())
         );
 

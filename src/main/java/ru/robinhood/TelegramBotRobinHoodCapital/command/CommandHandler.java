@@ -35,16 +35,21 @@ public class CommandHandler {
     private final CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo;
     private final CreateStartCommandText createStartCommandText;
     private final CreateWalletCommand createWalletCommand;
+    private final EditNumberWalletCommand editNumberWalletCommand;
     private final HistoryDepositCommand historyDepositCommand;
     private final InferenceCommand inferenceCommand;
     private final HistoryInferenceCommand historyInferenceCommand;
     private final CancelCommand cancelCommand;
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
+    private final AcceptEditNumberWalletCommand acceptEditNumberWalletCommand;
+    private final ResponseOnHelpMessage responseOnHelpMessage;
     private final CalculateCommand calculateCommand;
     private final DepositCommand depositCommand;
     private final SettingWalletCommand settingWalletCommand;
+    private final CancelEditNumberWalletCommand cancelEditNumberWalletCommand;
     private final UserController userController;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
+    private final ChoiceHelpMessageCommand choiceHelpMessageCommand;
     private final WalletController walletController;
     private final HelpCommand helpCommand;
     private final AdminCommandsListCommand adminCommandsListCommand;
@@ -52,6 +57,7 @@ public class CommandHandler {
     private final Map<Long, Message> chatIdMessage = new HashMap<>();
     private final String adminNumberWallet;
     private final AuthAdminCommand authAdminCommand;
+    private final ChoiceEditWalletCommand choiceEditWalletCommand;
     private final SendMessageAdminCommand sendMessageAdminCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
@@ -60,13 +66,13 @@ public class CommandHandler {
     public CommandHandler(StartCommand startCommand,
                           PersonalAccountCommand personalAccountCommand, InferenceController inferenceController, AdminPanelCommand adminPanelCommand,
                           WalletManagementCommand walletManagementCommand, CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo, CreateStartCommandText createStartCommandText,
-                          CreateWalletCommand createWalletCommand, HistoryDepositCommand historyDepositCommand, InferenceCommand inferenceCommand, HistoryInferenceCommand historyInferenceCommand,
+                          CreateWalletCommand createWalletCommand, EditNumberWalletCommand editNumberWalletCommand, HistoryDepositCommand historyDepositCommand, InferenceCommand inferenceCommand, HistoryInferenceCommand historyInferenceCommand,
                           CancelCommand cancelCommand,
-                          @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
+                          @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, AcceptEditNumberWalletCommand acceptEditNumberWalletCommand, ResponseOnHelpMessage responseOnHelpMessage,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
-                          SettingWalletCommand settingWalletCommand, UserController userController,
-                          InlineKeyboardInitializer inlineKeyboardInitializer, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, SendMessageAdminCommand sendMessageAdminCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
+                          InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand,
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, ConfimInferenceCommand confimInferenceCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -76,21 +82,27 @@ public class CommandHandler {
         this.createStartCommandPhotoAndVideo = createStartCommandPhotoAndVideo;
         this.createStartCommandText = createStartCommandText;
         this.createWalletCommand = createWalletCommand;
+        this.editNumberWalletCommand = editNumberWalletCommand;
         this.historyDepositCommand = historyDepositCommand;
         this.inferenceCommand = inferenceCommand;
         this.historyInferenceCommand = historyInferenceCommand;
         this.cancelCommand = cancelCommand;
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
+        this.acceptEditNumberWalletCommand = acceptEditNumberWalletCommand;
+        this.responseOnHelpMessage = responseOnHelpMessage;
         this.calculateCommand = calculateCommand;
         this.depositCommand = depositCommand;
         this.settingWalletCommand = settingWalletCommand;
+        this.cancelEditNumberWalletCommand = cancelEditNumberWalletCommand;
         this.userController = userController;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
+        this.choiceHelpMessageCommand = choiceHelpMessageCommand;
         this.walletController = walletController;
         this.helpCommand = helpCommand;
         this.adminCommandsListCommand = adminCommandsListCommand;
         this.adminNumberWallet = adminNumberWallet;
         this.authAdminCommand = authAdminCommand;
+        this.choiceEditWalletCommand = choiceEditWalletCommand;
         this.sendMessageAdminCommand = sendMessageAdminCommand;
         this.confimInferenceCommand = confimInferenceCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
@@ -215,7 +227,7 @@ public class CommandHandler {
         } else if (callBackQuery.equals(AdminButton.SHOW_WALLET_NUMBER.name())) {
 
             Optional<Inference> inference = inferenceController.findById(
-                    MessageHelper.findInferenceIdText(message.getText()));
+                    MessageHelper.findIdText(message.getText()));
 
             inference.ifPresent(value -> {
                 String response;
@@ -300,11 +312,42 @@ public class CommandHandler {
         } else if (callBackQuery.equals(HelpCommands.SEND_MESSAGE_ADMIN.name())) {
             chatIdCurrentCommand.put(message.getChatId(), HelpCommands.SEND_MESSAGE_ADMIN.name());
 
-            robbinHoodTelegramBot.sendMessage(
-                    message.getChatId(),
+            robbinHoodTelegramBot.editMessage(
+                    message,
                     "Напишите ваш вопрос. Мы ответим как можно быстрее",
-                    null);
+                    inlineKeyboardInitializer.initGoBackHelpCommand());
 
+        } else if (callBackQuery.equals(HelpCommands.GO_BACK_HELP_MENU.name())) {
+            resetPreviousCommands(message);
+            helpCommand.execute(message);
+
+        }else if (callBackQuery.equals(AdminButton.RESPONSE_HELP_MESSAGE.name())) {
+            chatIdMessage.put(message.getChatId(), message);
+            chatIdCurrentCommand.put(message.getChatId(), AdminButton.RESPONSE_HELP_MESSAGE.name());
+
+            robbinHoodTelegramBot.editMessage(
+                    message,
+                    "%s\n\nОтправьте ответ:".formatted(message.getText()),
+                    inlineKeyboardInitializer.initGoBackHelpMessage());
+        } else if (callBackQuery.equals(AdminButton.GO_BACK_TOPIC_MESSAGES.name())) {
+            resetPreviousCommands(message);
+            if (chatIdMessage.containsKey(message.getChatId())) {
+                robbinHoodTelegramBot.editMessage(
+                        message,
+                        chatIdMessage.get(message.getChatId()).getText(),
+                        inlineKeyboardInitializer.initAdminResponseHelpMessage());
+            }
+        } else if (callBackQuery.equals(HelpCommands.EDIT_NUMBER_WALLET.name())) {
+            chatIdCurrentCommand.put(message.getChatId(), HelpCommands.EDIT_NUMBER_WALLET.name());
+
+            robbinHoodTelegramBot.editMessage(
+                    message,
+                    "Отправьте, новый адрес кошелька",
+                    inlineKeyboardInitializer.initGoBackHelpCommand());
+        } else if (callBackQuery.equals(AdminButton.EDIT_WALLET_NUMBER.name())) {
+            acceptEditNumberWalletCommand.execute(message);
+        } else if (callBackQuery.equals(AdminButton.CANCEL_EDIT_WALLET_NUMBER.name())) {
+            cancelEditNumberWalletCommand.execute(message);
         }
     }
 
@@ -332,8 +375,8 @@ public class CommandHandler {
             chatIdCurrentCommand.put(message.getChatId(), MenuCommand.CALCULATE.toString());
             robbinHoodTelegramBot.sendMessage(
                     message.getChatId(),
-                    "🔢 Калькулятор 🔢\n\nВведите сумму в USD которую хотите внести или 'отмена' для отмены операции",
-                    null);
+                    "🔢 Калькулятор 🔢\n\nВведите сумму в USD которую хотите внести.",
+                    inlineKeyboardInitializer.initCloseCalculate());
         } else if (text.contains(AdminCommand.AUTH_ADMIN.toString())) {
             resetPreviousCommands(message);
             authAdminCommand.execute(message);
@@ -387,6 +430,14 @@ public class CommandHandler {
         } else if (text.equals(MenuCommand.HELP.toString())) {
             resetPreviousCommands(message);
             helpCommand.execute(message);
+        } else if (text.equals(AdminPanel.SHOW_HELP_MESSAGE.toString())) {
+            resetPreviousCommands(message);
+            choiceHelpMessageCommand.execute(message);
+
+        } else if (text.equals(AdminPanel.SHOW_EDIT_WALLET_NUMBER.toString())) {
+            resetPreviousCommands(message);
+            choiceEditWalletCommand.execute(message);
+
         } else if (text.contains(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
@@ -405,14 +456,9 @@ public class CommandHandler {
         } else if (text.contains(AdminCommand.CREATE_START_VIDEO.toString())) {
             resetPreviousCommands(message);
             createStartCommandPhotoAndVideo.execute(message);
-        } else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
+        }else if (chatIdCurrentCommand.containsKey(message.getChatId())) {
             checkerCurrentCommand(message);
-        } else
-            robbinHoodTelegramBot.sendMessage(
-                    message.getChatId(),
-                    "Пока что я не знаю таких команд 🙄",
-                    null);
-
+        }
     }
 
     private void resetPreviousCommands(Message message) {
@@ -446,6 +492,12 @@ public class CommandHandler {
             inferenceCommand.execute(message);
         } else if (value.equals(HelpCommands.SEND_MESSAGE_ADMIN.name())) {
             sendMessageAdminCommand.execute(message);
+        } else if (value.equals(AdminButton.RESPONSE_HELP_MESSAGE.name())) {
+            message.setMessageId(chatIdMessage.get(message.getChatId()).getMessageId());
+            message.setText("%s\nОтвет: %s".formatted(chatIdMessage.get(message.getChatId()).getText(), message.getText()));
+            responseOnHelpMessage.execute(message);
+        } else if (value.equals(HelpCommands.EDIT_NUMBER_WALLET.name())) {
+            editNumberWalletCommand.execute(message);
         }
     }
 }

@@ -36,7 +36,7 @@ public class ConfimInferenceCommand implements Command {
     @Override
     public void execute(Message message) {
         Long adminChatId = message.getChatId();
-        Long inferenceId = MessageHelper.findInferenceIdText(message.getText());
+        Long inferenceId = MessageHelper.findIdText(message.getText());
 
         Optional<Inference> inferenceOptional = inferenceController.findById(inferenceId);
 

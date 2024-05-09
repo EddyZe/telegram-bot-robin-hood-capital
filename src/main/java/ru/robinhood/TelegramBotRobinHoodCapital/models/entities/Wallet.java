@@ -36,5 +36,7 @@ public class Wallet implements Serializable {
     @Column(name = "number_wallet")
     private String numberWallet;
 
+    @OneToMany(mappedBy = "currentWallet")
+    private List<EditNumberWallet> editNumberWallets;
 
 }

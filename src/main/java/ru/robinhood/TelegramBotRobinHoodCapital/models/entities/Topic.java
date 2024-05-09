@@ -4,6 +4,8 @@ package ru.robinhood.TelegramBotRobinHoodCapital.models.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "topic")
 @AllArgsConstructor
@@ -11,7 +13,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class Topic {
+public class Topic implements Serializable {
 
 
     @Id
@@ -32,4 +34,7 @@ public class Topic {
 
     @Column(name = "chat_id")
     private Long chatId;
+
+    @Column(name = "response")
+    private String response;
 }

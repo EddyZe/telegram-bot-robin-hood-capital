@@ -32,6 +32,10 @@ public class HelpCommand implements Command {
                 Если с вы желаете сменить адрес кошелька, то укажите причину, мы обработаем ее как можно быстрее.""";
 
 
-        robbinHoodTelegramBot.sendMessage(chatId, response, inlineKeyboardInitializer.initHelpCommand());
+        try {
+            robbinHoodTelegramBot.editMessage(message, response, inlineKeyboardInitializer.initHelpCommand());
+        } catch (Exception e) {
+            robbinHoodTelegramBot.sendMessage(chatId, response, inlineKeyboardInitializer.initHelpCommand());
+        }
     }
 }
