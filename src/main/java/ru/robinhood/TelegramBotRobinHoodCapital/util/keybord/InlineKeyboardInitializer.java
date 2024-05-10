@@ -1,5 +1,6 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.util.keybord;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -15,17 +16,34 @@ import java.util.List;
 public class InlineKeyboardInitializer {
 
     private InlineKeyboardMarkup inlineKeyboardMarkup;
+    private final int percent;
+
+    public InlineKeyboardInitializer(@Value("${telegram.bot.invited.bonus}") int percent) {
+        this.percent = percent;
+    }
 
     public InlineKeyboardMarkup initAccountManager() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         var linkWallet = createButton("Управление счетом", AccountManagerCommand.SETTING_WALLET);
+        var refProgram = createButton("Получить %d%% к пополнению".formatted(percent), AccountManagerCommand.ENTER_REF_CODE);
         var historyDeposit = createButton("История пополнений", AccountManagerCommand.HISTORY_DIPOSIT);
         var historyInference = createButton("История выводов", AccountManagerCommand.HISTORY_INFERENCE);
         var closeButton = createButton("Закрыть", AccountManagerCommand.CLOSE);
-        var rows = createListButton(linkWallet, historyDeposit, historyInference, closeButton);
+        var rows = createListButton(linkWallet, refProgram, historyDeposit, historyInference, closeButton);
 
         inlineKeyboardMarkup.setKeyboard(rows);
+
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initGoBackAccountManager() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var goback = createButton("Назад", AccountManagerCommand.Go_BACK_ACCOUNT_MANAGER);
+
+        var row = createListButton(goback);
+        inlineKeyboardMarkup.setKeyboard(row);
 
         return inlineKeyboardMarkup;
     }
@@ -227,6 +245,28 @@ public class InlineKeyboardInitializer {
 
         inlineKeyboardMarkup.setKeyboard(rows);
 
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initRefProgram() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var code = createButton("Показать отдельно код", AccountManagerCommand.REF_CODE);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+
+        var rows = createListButton(code, close);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initGoBackRefProgram() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var goBack = createButton("Назад", AccountManagerCommand.GO_BACK_REF_PROGRAM);
+        var row = createListButton(goBack);
+
+        inlineKeyboardMarkup.setKeyboard(row);
         return inlineKeyboardMarkup;
     }
 

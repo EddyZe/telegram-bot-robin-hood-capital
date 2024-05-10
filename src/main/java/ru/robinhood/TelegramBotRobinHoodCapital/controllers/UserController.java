@@ -36,4 +36,9 @@ public class UserController {
     public Optional<User> findById(Long userId) {
         return userService.findById(userId);
     }
+
+    public Optional<User> findByInvited(Long invitedChatId) {
+        return userService.findByInvited(invitedChatId);
+    }
+
 }

@@ -55,9 +55,11 @@ public class CommandHandler {
     private final WalletController walletController;
     private final HelpCommand helpCommand;
     private final AdminCommandsListCommand adminCommandsListCommand;
+    private final ReferalProgramCommand referalProgramCommand;
     private final ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand;
     private final Map<Long, String> chatIdCurrentCommand = new HashMap<>();
     private final Map<Long, Message> chatIdMessage = new HashMap<>();
+    private final int percent;
     private final String adminNumberWallet;
     private final AuthAdminCommand authAdminCommand;
     private final ChoiceEditWalletCommand choiceEditWalletCommand;
@@ -66,6 +68,7 @@ public class CommandHandler {
     private final ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
     private final OpenOperatorPanelCommand openOperatorPanelCommand;
+    private final EnterRefCodeCommand enterRefCodeCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
@@ -77,8 +80,8 @@ public class CommandHandler {
                           @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, AcceptEditNumberWalletCommand acceptEditNumberWalletCommand, ResponseOnHelpMessage responseOnHelpMessage, ShowProcessedEditWalletCommand showProcessedEditWalletCommand,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
-                          InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ReferalProgramCommand referalProgramCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand, @Value("${telegram.bot.invited.bonus}") int percent,
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, EnterRefCodeCommand enterRefCodeCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -108,7 +111,9 @@ public class CommandHandler {
         this.walletController = walletController;
         this.helpCommand = helpCommand;
         this.adminCommandsListCommand = adminCommandsListCommand;
+        this.referalProgramCommand = referalProgramCommand;
         this.showHelpMessageUnprocessedCommand = showHelpMessageUnprocessedCommand;
+        this.percent = percent;
         this.adminNumberWallet = adminNumberWallet;
         this.authAdminCommand = authAdminCommand;
         this.choiceEditWalletCommand = choiceEditWalletCommand;
@@ -117,6 +122,7 @@ public class CommandHandler {
         this.showHelpMessageProcessedCommand = showHelpMessageProcessedCommand;
         this.confimInferenceCommand = confimInferenceCommand;
         this.openOperatorPanelCommand = openOperatorPanelCommand;
+        this.enterRefCodeCommand = enterRefCodeCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
     }
@@ -376,6 +382,24 @@ public class CommandHandler {
             showHelpMessageProcessedCommand.execute(message);
         } else if (callBackQuery.equals(AdminButton.SHOW_UNPROCESSED_HELP_MESSAGE.name())) {
             showHelpMessageUnprocessedCommand.execute(message);
+        } else if (callBackQuery.equals(AccountManagerCommand.REF_CODE.name())) {
+            robbinHoodTelegramBot.editMessage(
+                    message,
+                    String.valueOf(message.getChatId()),
+                    inlineKeyboardInitializer.initGoBackRefProgram());
+        } else if (callBackQuery.equals(AccountManagerCommand.ENTER_REF_CODE.name())) {
+            chatIdCurrentCommand.put(message.getChatId(), AccountManagerCommand.ENTER_REF_CODE.name());
+
+            robbinHoodTelegramBot.editMessage(
+                    message,
+                    "Введи код приглашения и получи %d%% к пополнению".formatted(percent),
+                    inlineKeyboardInitializer.initGoBackAccountManager()
+            );
+
+        } else if (callBackQuery.equals(AccountManagerCommand.GO_BACK_REF_PROGRAM.name())) {
+            referalProgramCommand.execute(message);
+        } else if (callBackQuery.equals(AccountManagerCommand.Go_BACK_ACCOUNT_MANAGER.name())) {
+            personalAccountCommand.execute(message);
         }
     }
 
@@ -471,6 +495,9 @@ public class CommandHandler {
         } else if (text.equals(AdminCommand.OPERATOR_PANEL.toString())) {
             resetPreviousCommands(message);
             openOperatorPanelCommand.execute(message);
+        } else if (text.equals(MenuCommand.REFERRAL_PROGRAM.toString())) {
+            resetPreviousCommands(message);
+            referalProgramCommand.execute(message);
         } else if (text.startsWith(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);
@@ -534,6 +561,8 @@ public class CommandHandler {
             responseOnHelpMessage.execute(message);
         } else if (value.equals(HelpCommands.EDIT_NUMBER_WALLET.name())) {
             editNumberWalletCommand.execute(message);
+        } else if (value.equals(AccountManagerCommand.ENTER_REF_CODE.name())) {
+            enterRefCodeCommand.execute(message);
         }
     }
 }

@@ -67,14 +67,15 @@ public class TonkeeperClient {
 
     @SneakyThrows
     public Long getTonPrice() {
-        String url = "https://api.coingecko.com/api/v3/coins/the-open-network";
+        String url = "https://tonapi.io/v2/rates?tokens=ton&currencies=usd";
 
         String response = restTemplate.getForObject(url, String.class);
 
         double price = Double.parseDouble(objectMapper.readTree(response)
-                .get("market_data")
-                .get("current_price")
-                .get("usd")
+                .get("rates")
+                .get("TON")
+                .get("prices")
+                .get("USD")
                 .toString());
 
         return (long) (price * 100);

@@ -7,7 +7,6 @@ import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.UserState;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -56,5 +55,8 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "owner")
     private List<Topic> topics;
+
+    @Column(name = "invited")
+    private Long invited;
 
 }

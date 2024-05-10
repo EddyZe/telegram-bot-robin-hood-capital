@@ -41,4 +41,7 @@ public class Deposit implements Serializable {
 
     @Column(name = "amount")
     private Long amount;
+
+    @Column(name = "bonus")
+    private Long bonus;
 }

@@ -58,10 +58,12 @@ public class DepositService {
         deposits.forEach(deposit -> {
             Optional<Wallet> wallet = walletService.findByOwnerChatId(deposit.getChatId());
             if (wallet.isPresent()) {
+                Long bonus = deposit.getBonus();
+                if (bonus != null) {
+                    issuingBonus(deposit, bonus, wallet);
+                }
                 wallet.get().setBalance(wallet.get().getBalance() + deposit.getAmount());
                 wallet.get().setOrigBalance(wallet.get().getOrigBalance() + deposit.getAmount());
-                walletService.save(wallet.get());
-                userService.save(wallet.get().getOwner());
                 deposit.setStatus(true);
                 Double amount = Double.valueOf(deposit.getAmount());
                 robbinHoodTelegramBot.sendMessage(
@@ -69,7 +71,37 @@ public class DepositService {
                         "💵 Ваш баланс пополнен на %.2f USD 💵".formatted(amount / 100),
                         null);
                 depositRepository.save(deposit);
+                walletService.save(wallet.get());
+                userService.save(wallet.get().getOwner());
             }
+        });
+    }
+
+    private void issuingBonus(Deposit deposit, Long bonus, Optional<Wallet> wallet) {
+        robbinHoodTelegramBot.sendMessage(
+                deposit.getChatId(),
+                "Бонус за первое пополнение: %.2f 💵".formatted(Double.valueOf(bonus) / 100),
+                null);
+
+        robbinHoodTelegramBot.sendMessage(
+                wallet.get().getOwner().getInvited(),
+                "%s сделал(-а) первое пополнение. Вот ваш бонус: %.2f 💵".formatted(
+                        wallet.get().getOwner().getName(),
+                        Double.valueOf(bonus) / 100),
+                null);
+
+        wallet.get().setBalance(wallet.get().getBalance() + bonus);
+        wallet.get().setOrigBalance(wallet.get().getOrigBalance() + bonus);
+
+        Optional<Wallet> invitedWallet = walletService.findByOwnerChatId(wallet.get()
+                .getOwner()
+                .getInvited());
+
+        invitedWallet.ifPresent(iw -> {
+            iw.setBalance(iw.getBalance() + bonus);
+            iw.setOrigBalance(iw.getOrigBalance() + bonus);
+            walletService.save(iw);
+            userService.save(iw.getOwner());
         });
     }
 }

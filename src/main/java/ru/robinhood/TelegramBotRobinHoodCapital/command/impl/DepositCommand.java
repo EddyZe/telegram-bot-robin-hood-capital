@@ -30,18 +30,21 @@ public class DepositCommand implements Command {
     private final DepositController depositController;
     private final UserController userController;
     private final String walletNumber;
+    private final double percent;
     private final String qrCodeWallet;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
 
 
     public DepositCommand(@Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, TonkeeperClient tonkeeperClient, DepositController depositController, UserController userController,
                           @Value("${tonkeeper.url.admin.wallet}") String walletNumber,
+                          @Value("${telegram.bot.invited.bonus}") int percent,
                           @Value("${telegram.bot.QR.code.filename}") String qrCodeWallet, InlineKeyboardInitializer inlineKeyboardInitializer) {
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
         this.tonkeeperClient = tonkeeperClient;
         this.depositController = depositController;
         this.userController = userController;
         this.walletNumber = walletNumber;
+        this.percent = percent;
         this.qrCodeWallet = qrCodeWallet;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
     }
@@ -118,6 +121,12 @@ public class DepositCommand implements Command {
                                     .hashTransaction(transaction.getHash())
                                     .createdAt(LocalDateTime.now())
                                     .build();
+
+                            List<Deposit> deposits = depositController.findByChatId(chatId);
+
+                            if (deposits.isEmpty() && user.get().getInvited() != null) {
+                                deposit.setBonus((long) ((amount / 1_000_000_000) * (percent / 100)));
+                            }
 
                             depositController.save(deposit);
                         }
