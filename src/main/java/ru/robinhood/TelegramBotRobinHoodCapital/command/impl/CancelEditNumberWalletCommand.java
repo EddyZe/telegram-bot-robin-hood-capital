@@ -40,7 +40,7 @@ public class CancelEditNumberWalletCommand implements Command {
         if (user.getRole() != Role.ADMIN) {
             robbinHoodTelegramBot.sendMessage(
                     message.getChatId(),
-                    "Комманда доступна только администраторам!",
+                    "Команда доступна только администраторам!",
                     null);
             return;
         }

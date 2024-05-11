@@ -106,7 +106,7 @@ public class SetOperatorCommand implements Command {
         } catch (NumberFormatException e) {
             robbinHoodTelegramBot.sendMessage(
                     message.getChatId(),
-                    "Номер профиля должен содеражать только цифры!",
+                    "Номер профиля должен содержать только цифры!",
                     null);
         }
     }

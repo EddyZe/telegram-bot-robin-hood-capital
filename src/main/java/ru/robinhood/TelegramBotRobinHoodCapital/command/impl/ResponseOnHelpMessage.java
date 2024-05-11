@@ -61,7 +61,7 @@ public class ResponseOnHelpMessage implements Command {
         if (topic.isStatus()) {
             robbinHoodTelegramBot.editMessage(
                     message,
-                    "%s\n Обращение уже обработано другим админисратором!".formatted(MessageHelper.generateTopic(topic)),
+                    "%s\n Обращение уже обработано другим администратором!".formatted(MessageHelper.generateTopic(topic)),
                     null);
             return;
         }

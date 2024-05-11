@@ -45,7 +45,7 @@ public class AcceptEditNumberWalletCommand implements Command {
         if (user.getRole() != Role.ADMIN) {
             robbinHoodTelegramBot.sendMessage(
                     chatId,
-                    "Комманда доступна только администраторам!",
+                    "Команда доступна только администраторам!",
                     null);
             return;
         }
@@ -76,7 +76,7 @@ public class AcceptEditNumberWalletCommand implements Command {
 
         robbinHoodTelegramBot.editMessage(
                 message,
-                "Вы одобрили заявку на изменение. Пользователь получит увидомление о одобрении!",
+                "Вы одобрили заявку на изменение. Пользователь получит уведомление о одобрении!",
                 null);
 
         robbinHoodTelegramBot.sendMessage(

@@ -27,7 +27,7 @@ public class InlineKeyboardInitializer {
 
         var linkWallet = createButton("Управление счетом", AccountManagerCommand.SETTING_WALLET);
         var refProgram = createButton("Получить %d%% к пополнению".formatted(percent), AccountManagerCommand.ENTER_REF_CODE);
-        var historyDeposit = createButton("История пополнений", AccountManagerCommand.HISTORY_DIPOSIT);
+        var historyDeposit = createButton("История пополнений", AccountManagerCommand.HISTORY_DEPOSIT);
         var historyInference = createButton("История выводов", AccountManagerCommand.HISTORY_INFERENCE);
         var closeButton = createButton("Закрыть", AccountManagerCommand.CLOSE);
         var rows = createListButton(linkWallet, refProgram, historyDeposit, historyInference, closeButton);
@@ -40,11 +40,36 @@ public class InlineKeyboardInitializer {
     public InlineKeyboardMarkup initGoBackAccountManager() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        var goback = createButton("Назад", AccountManagerCommand.Go_BACK_ACCOUNT_MANAGER);
+        var goBack = createButton("Назад", AccountManagerCommand.Go_BACK_ACCOUNT_MANAGER);
 
-        var row = createListButton(goback);
+        var row = createListButton(goBack);
         inlineKeyboardMarkup.setKeyboard(row);
 
+        return inlineKeyboardMarkup;
+    }
+
+    public InlineKeyboardMarkup initFAQ() {
+        inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        var howDepositBalance = createButton("1. Как пополнить счет?", FAQ.HOW_DEPOSIT_BALANCE);
+        var howInferenceBalance = createButton("2. Как вывести средства?", FAQ.HOW_INFERENCE_BALANCE);
+        var howEditWalletAddress = createButton("3. Как изменить адрес кошелька?", FAQ.HOW_EDIT_ADDRESS_WALLET);
+        var howCalculateFinalAmount = createButton("4. Сколько я заработаю?", FAQ.HOW_CALCULATE_FINAL_AMOUNT);
+        var howGetBonus = createButton("5. Как получить %s%% к пополнению?".formatted(percent), FAQ.HOW_GET_BONUS);
+        var howGetBonusInvited = createButton("6. Как получать бонусы за приглашения?", FAQ.HOW_GET_BONUS_INVITED);
+        var howLinkWallet = createButton("7. Как привязать кошелек?", FAQ.HOW_LINK_WALLET);
+        var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
+
+        var rows = createListButton(
+                howDepositBalance,
+                howInferenceBalance,
+                howEditWalletAddress,
+                howCalculateFinalAmount,
+                howGetBonus,
+                howGetBonusInvited,
+                howLinkWallet,
+                close);
+        inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
     }
 
@@ -120,7 +145,7 @@ public class InlineKeyboardInitializer {
     public InlineKeyboardMarkup initInference() {
         inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        var confirmInference = createButton("Отметить выполненым", AdminButton.CONFIRM_INFERENCE);
+        var confirmInference = createButton("Отметить выполненным", AdminButton.CONFIRM_INFERENCE);
         var showNumberWallet = createButton("Показать адрес кошелька", AdminButton.SHOW_WALLET_NUMBER);
         var close = createButton("Закрыть", AccountManagerCommand.CLOSE);
 

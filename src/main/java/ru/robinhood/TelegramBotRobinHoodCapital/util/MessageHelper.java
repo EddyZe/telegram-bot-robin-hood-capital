@@ -50,7 +50,7 @@ public class MessageHelper {
                 Баланс: %.2f USD
                 Баланс через год: %.2f USD
                                 
-                Зароботок в день: %.2f USD
+                Заработок в день: %.2f USD
                 Заработок в месяц: %.2f USD
                 """.formatted(
                 wallet.getId(),
@@ -72,7 +72,7 @@ public class MessageHelper {
                 Баланс через 6 месяцев: %.2f USD
                 Баланс через год: %.2f USD
                                 
-                Зароботок в день: %.2f USD
+                Заработок в день: %.2f USD
                 Заработок в месяц: %.2f USD
                 """.formatted(
                 number,

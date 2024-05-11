@@ -43,6 +43,16 @@ public class EditNumberWalletCommand implements Command {
     public void execute(Message message) {
         Long chatId = message.getChatId();
 
+        Optional<Wallet> busyWallet = walletController.findByNumberWallet(message.getText());
+
+        if (busyWallet.isPresent()) {
+            robbinHoodTelegramBot.sendMessage(
+                    message.getChatId(),
+                    "Упс! Кажется такой адрес кошелька уже занят!",
+                    null);
+            return;
+        }
+
         Optional<Wallet> walletOptional = walletController.findByOwnerChatId(chatId);
 
         if (walletOptional.isEmpty())

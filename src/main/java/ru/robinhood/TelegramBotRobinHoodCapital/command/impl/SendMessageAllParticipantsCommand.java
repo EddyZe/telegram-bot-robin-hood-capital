@@ -48,7 +48,7 @@ public class SendMessageAllParticipantsCommand implements Command {
             if (currentUser.getRole() != Role.ADMIN) {
                 robbinHoodTelegramBot.sendMessage(
                         chatId,
-                        "Комманада доступна только администраторам!",
+                        "Команда доступна только администраторам!",
                         replayKeyboardInitializer.initStartingKeyboard());
                 return;
             }

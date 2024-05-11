@@ -40,7 +40,7 @@ public class WalletManagementCommand implements Command {
 
         if (wallet.isEmpty()) {
             String response = """
-                    У вас ненастроен кошелек!
+                    У вас не настроен кошелек!
                     Чтобы настроить кошелек - перейдите в личный кабинет и нажмите на кнопку "Управление счетом", затем "Привязать кошелек".
                     """;
             robbinHoodTelegramBot.sendMessage(

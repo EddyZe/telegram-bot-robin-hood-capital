@@ -29,6 +29,7 @@ public class CommandHandler {
 
     private final StartCommand startCommand;
     private final PersonalAccountCommand personalAccountCommand;
+    private final HowEditAddressWalletCommand howEditAddressWalletCommand;
     private final InferenceController inferenceController;
     private final AdminPanelCommand adminPanelCommand;
     private final WalletManagementCommand walletManagementCommand;
@@ -38,6 +39,7 @@ public class CommandHandler {
     private final CreateWalletCommand createWalletCommand;
     private final EditNumberWalletCommand editNumberWalletCommand;
     private final HistoryDepositCommand historyDepositCommand;
+    private final FAQCommand faqCommand;
     private final InferenceCommand inferenceCommand;
     private final HistoryInferenceCommand historyInferenceCommand;
     private final CancelCommand cancelCommand;
@@ -45,12 +47,14 @@ public class CommandHandler {
     private final AcceptEditNumberWalletCommand acceptEditNumberWalletCommand;
     private final ResponseOnHelpMessage responseOnHelpMessage;
     private final ShowProcessedEditWalletCommand showProcessedEditWalletCommand;
+    private final HowDepositBalanceCommand howDepositBalanceCommand;
     private final CalculateCommand calculateCommand;
     private final DepositCommand depositCommand;
     private final SettingWalletCommand settingWalletCommand;
     private final CancelEditNumberWalletCommand cancelEditNumberWalletCommand;
     private final UserController userController;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
+    private final HowCalculateFinalAmountCommand howCalculateFinalAmountCommand;
     private final ChoiceHelpMessageCommand choiceHelpMessageCommand;
     private final WalletController walletController;
     private final HelpCommand helpCommand;
@@ -63,29 +67,34 @@ public class CommandHandler {
     private final String adminNumberWallet;
     private final AuthAdminCommand authAdminCommand;
     private final ChoiceEditWalletCommand choiceEditWalletCommand;
+    private final HowGetBonusInvitedCommand howGetBonusInvitedCommand;
     private final SendMessageAdminCommand sendMessageAdminCommand;
     private final SetOperatorCommand setOperatorCommand;
     private final ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand;
     private final ConfimInferenceCommand confimInferenceCommand;
     private final OpenOperatorPanelCommand openOperatorPanelCommand;
+    private final HowInferenceCommand howInferenceCommand;
+    private final HowLingWalletCommand howLingWalletCommand;
     private final EnterRefCodeCommand enterRefCodeCommand;
+    private final HowGetBonusCommand howGetBonusCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
     private final ShowAllUsers showAllUsers;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
     public CommandHandler(StartCommand startCommand,
-                          PersonalAccountCommand personalAccountCommand, InferenceController inferenceController, AdminPanelCommand adminPanelCommand,
+                          PersonalAccountCommand personalAccountCommand, HowEditAddressWalletCommand howEditAddressWalletCommand, InferenceController inferenceController, AdminPanelCommand adminPanelCommand,
                           WalletManagementCommand walletManagementCommand, ShowUnprocessedEditWalletCommand showUnprocessedEditWalletCommand, CreateStartCommandPhotoAndVideo createStartCommandPhotoAndVideo, CreateStartCommandText createStartCommandText,
-                          CreateWalletCommand createWalletCommand, EditNumberWalletCommand editNumberWalletCommand, HistoryDepositCommand historyDepositCommand, InferenceCommand inferenceCommand, HistoryInferenceCommand historyInferenceCommand,
+                          CreateWalletCommand createWalletCommand, EditNumberWalletCommand editNumberWalletCommand, HistoryDepositCommand historyDepositCommand, FAQCommand faqCommand, InferenceCommand inferenceCommand, HistoryInferenceCommand historyInferenceCommand,
                           CancelCommand cancelCommand,
-                          @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, AcceptEditNumberWalletCommand acceptEditNumberWalletCommand, ResponseOnHelpMessage responseOnHelpMessage, ShowProcessedEditWalletCommand showProcessedEditWalletCommand,
+                          @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, AcceptEditNumberWalletCommand acceptEditNumberWalletCommand, ResponseOnHelpMessage responseOnHelpMessage, ShowProcessedEditWalletCommand showProcessedEditWalletCommand, HowDepositBalanceCommand howDepositBalanceCommand,
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
-                          InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ReferalProgramCommand referalProgramCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand, @Value("${telegram.bot.invited.bonus}") int percent,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, EnterRefCodeCommand enterRefCodeCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ShowAllUsers showAllUsers, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          InlineKeyboardInitializer inlineKeyboardInitializer, HowCalculateFinalAmountCommand howCalculateFinalAmountCommand, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ReferalProgramCommand referalProgramCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand, @Value("${telegram.bot.invited.bonus}") int percent,
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, HowGetBonusInvitedCommand howGetBonusInvitedCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, HowInferenceCommand howInferenceCommand, HowLingWalletCommand howLingWalletCommand, EnterRefCodeCommand enterRefCodeCommand, HowGetBonusCommand howGetBonusCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ShowAllUsers showAllUsers, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
+        this.howEditAddressWalletCommand = howEditAddressWalletCommand;
         this.inferenceController = inferenceController;
         this.adminPanelCommand = adminPanelCommand;
         this.walletManagementCommand = walletManagementCommand;
@@ -95,6 +104,7 @@ public class CommandHandler {
         this.createWalletCommand = createWalletCommand;
         this.editNumberWalletCommand = editNumberWalletCommand;
         this.historyDepositCommand = historyDepositCommand;
+        this.faqCommand = faqCommand;
         this.inferenceCommand = inferenceCommand;
         this.historyInferenceCommand = historyInferenceCommand;
         this.cancelCommand = cancelCommand;
@@ -102,12 +112,14 @@ public class CommandHandler {
         this.acceptEditNumberWalletCommand = acceptEditNumberWalletCommand;
         this.responseOnHelpMessage = responseOnHelpMessage;
         this.showProcessedEditWalletCommand = showProcessedEditWalletCommand;
+        this.howDepositBalanceCommand = howDepositBalanceCommand;
         this.calculateCommand = calculateCommand;
         this.depositCommand = depositCommand;
         this.settingWalletCommand = settingWalletCommand;
         this.cancelEditNumberWalletCommand = cancelEditNumberWalletCommand;
         this.userController = userController;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
+        this.howCalculateFinalAmountCommand = howCalculateFinalAmountCommand;
         this.choiceHelpMessageCommand = choiceHelpMessageCommand;
         this.walletController = walletController;
         this.helpCommand = helpCommand;
@@ -118,12 +130,16 @@ public class CommandHandler {
         this.adminNumberWallet = adminNumberWallet;
         this.authAdminCommand = authAdminCommand;
         this.choiceEditWalletCommand = choiceEditWalletCommand;
+        this.howGetBonusInvitedCommand = howGetBonusInvitedCommand;
         this.sendMessageAdminCommand = sendMessageAdminCommand;
         this.setOperatorCommand = setOperatorCommand;
         this.showHelpMessageProcessedCommand = showHelpMessageProcessedCommand;
         this.confimInferenceCommand = confimInferenceCommand;
         this.openOperatorPanelCommand = openOperatorPanelCommand;
+        this.howInferenceCommand = howInferenceCommand;
+        this.howLingWalletCommand = howLingWalletCommand;
         this.enterRefCodeCommand = enterRefCodeCommand;
+        this.howGetBonusCommand = howGetBonusCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
         this.showAllUsers = showAllUsers;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
@@ -227,7 +243,7 @@ public class CommandHandler {
                     adminNumberWallet,
                     null);
 
-        } else if (callBackQuery.equals(AccountManagerCommand.HISTORY_DIPOSIT.name())) {
+        } else if (callBackQuery.equals(AccountManagerCommand.HISTORY_DEPOSIT.name())) {
 
             historyDepositCommand.execute(message);
 
@@ -324,7 +340,7 @@ public class CommandHandler {
             if(inferences.isEmpty()) {
                 robbinHoodTelegramBot.editMessage(
                         message,
-                        "Список обработаных заявок на вывод пуст.",
+                        "Список обработанных заявок на вывод пуст.",
                         inlineKeyboardInitializer.initAdminInference());
                 return;
             }
@@ -402,6 +418,20 @@ public class CommandHandler {
             referalProgramCommand.execute(message);
         } else if (callBackQuery.equals(AccountManagerCommand.Go_BACK_ACCOUNT_MANAGER.name())) {
             personalAccountCommand.execute(message);
+        } else if (callBackQuery.equals(FAQ.HOW_DEPOSIT_BALANCE.name())) {
+            howDepositBalanceCommand.execute(message);
+        } else if (callBackQuery.equals(FAQ.HOW_INFERENCE_BALANCE.name())) {
+            howInferenceCommand.execute(message);
+        } else if (callBackQuery.equals(FAQ.HOW_EDIT_ADDRESS_WALLET.name())) {
+            howEditAddressWalletCommand.execute(message);
+        } else if (callBackQuery.equals(FAQ.HOW_CALCULATE_FINAL_AMOUNT.name())) {
+            howCalculateFinalAmountCommand.execute(message);
+        } else if (callBackQuery.equals(FAQ.HOW_GET_BONUS.name())) {
+            howGetBonusCommand.execute(message);
+        } else if (callBackQuery.equals(FAQ.HOW_GET_BONUS_INVITED.name())) {
+            howGetBonusInvitedCommand.execute(message);
+        } else if (callBackQuery.equals(FAQ.HOW_LINK_WALLET.name())) {
+            howLingWalletCommand.execute(message);
         }
     }
 
@@ -443,7 +473,7 @@ public class CommandHandler {
 
             userOptional.ifPresent(user -> {
                 if (user.getRole() == Role.ADMIN) {
-                    String response = "Какие запросы на вывод отоброзить?";
+                    String response = "Какие запросы на вывод отобразить?";
                     robbinHoodTelegramBot.sendMessage(
                             message.getChatId(),
                             response,
@@ -471,7 +501,7 @@ public class CommandHandler {
                 }
 
                 String response = user.getRole() == Role.ADMIN ?
-                        "Чтобы вернуться в панель адменистратора введите %s".formatted(AdminCommand.ADMIN_PANEL) :
+                        "Чтобы вернуться в панель администратора введите %s".formatted(AdminCommand.ADMIN_PANEL) :
                         "Чтобы вернуться в панель оператора введите %s".formatted(AdminCommand.OPERATOR_PANEL);
 
                 robbinHoodTelegramBot.sendMessage(
@@ -498,10 +528,13 @@ public class CommandHandler {
             resetPreviousCommands(message);
             openOperatorPanelCommand.execute(message);
         } else if (text.equals(AdminPanel.SHOW_ALL_USERS.toString())) {
+            resetPreviousCommands(message);
             showAllUsers.execute(message);
         } else if (text.equals(MenuCommand.REFERRAL_PROGRAM.toString())) {
             resetPreviousCommands(message);
             referalProgramCommand.execute(message);
+        } else if (text.equals(MenuCommand.FAQ.toString())) {
+            faqCommand.execute(message);
         } else if (text.startsWith(AdminCommand.ADMIN_SEND_MESSAGE_ALL.toString())){
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);

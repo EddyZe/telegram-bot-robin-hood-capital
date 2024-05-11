@@ -2,8 +2,11 @@ package ru.robinhood.TelegramBotRobinHoodCapital.command.impl;
 
 
 import lombok.SneakyThrows;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -16,10 +19,8 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.xml.DataUserModel;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -87,6 +88,16 @@ public class ShowAllUsers implements Command {
         row.createCell(6).setCellValue("Пользователей пригласил");
         row.createCell(7).setCellValue("Реферальный код");
         row.createCell(8).setCellValue("Роль");
+
+        HSSFFont font = hssfWorkbook.createFont();
+        font.setBold(true);
+        font.setColor(Font.COLOR_RED);
+        HSSFCellStyle style = hssfWorkbook.createCellStyle();
+        style.setFont(font);
+        for (int i = 0; i < 9; i++) {
+            hssfSheet.autoSizeColumn(i);
+            row.getCell(i).setCellStyle(style);
+        }
 
         for (User user : users) {
             createSheetHeader(hssfSheet, ++rowNum, createFromUserToDataUserModel(user));

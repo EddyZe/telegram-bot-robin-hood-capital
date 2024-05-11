@@ -32,7 +32,7 @@ public class ShowHelpMessageProcessedCommand implements Command {
         if (topics.isEmpty()) {
             robbinHoodTelegramBot.sendMessage(
                     message.getChatId(),
-                    "Спиок обработаных обращений пока что пуст!",
+                    "Список обработанных обращений пока что пуст!",
                     null);
             return;
         }

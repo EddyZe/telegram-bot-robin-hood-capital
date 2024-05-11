@@ -34,7 +34,7 @@ public class CancelCommand implements Command {
         if (user == null) {
             robbinHoodTelegramBot.sendMessage(
                     chatId,
-                    "Упс! Похоже вы еще не зарегестрированы!",
+                    "Упс! Похоже вы еще не зарегистрированы!",
                     replayKeyboardInitializer.initStartingKeyboard());
             return;
         }
