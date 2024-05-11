@@ -73,17 +73,14 @@ public class PersonalAccountCommand implements Command {
         if (wallet == null) {
             return MessageHelper.infoAccountNotWallet(user);
         } else {
-            long tonPrice = tonkeeperClient.getTonPrice();
-            long amount = Long.parseLong(tonkeeperClient.getTonKeeperWalletBalance(wallet));
+//            long tonPrice = tonkeeperClient.getTonPrice();
+//            long amount = Long.parseLong(tonkeeperClient.getTonKeeperWalletBalance(wallet));
+//
+//            amount *= tonPrice;
+//
+//            double balance = ((double) amount) / 1_000_000_000;
 
-            amount *= tonPrice;
-
-            double balance = ((double) amount) / 1_000_000_000;
-
-            return "%s\nБаланс привязоного кошелька: %.2f USD"
-                    .formatted(
-                            MessageHelper.infoAccount(user, wallet),
-                             balance / 100);
+            return MessageHelper.infoAccount(user, wallet);
         }
     }
 }

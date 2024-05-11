@@ -117,19 +117,18 @@ public class CreateWalletCommand implements Command {
     }
 
     private String generateResponse(String tonkreeperBalanceWallet) {
-        long tonPrice = tonkeeperClient.getTonPrice();
-        long amount = Long.parseLong(tonkreeperBalanceWallet);
-
-        amount *= tonPrice;
-
-        double balance = ((double) amount) / 1_000_000_000;
+       // long tonPrice = tonkeeperClient.getTonPrice();
+//        long amount = Long.parseLong(tonkreeperBalanceWallet);
+//
+//        amount *= tonPrice;
+//
+//        double balance = ((double) amount) / 1_000_000_000;
 
         return """
                 💰 Настройка кошелька 💰
                                 
                 Вы привязали кошелек!
                 Теперь вам доступны функции снятия и пополнения!
-                Баланс вашего кошелька: %.2f USD""".formatted(
-                balance / 100);
+                """;
     }
 }

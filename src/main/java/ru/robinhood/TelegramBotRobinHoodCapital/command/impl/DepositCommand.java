@@ -12,8 +12,8 @@ import ru.robinhood.TelegramBotRobinHoodCapital.controllers.DepositController;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Deposit;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.Transaction;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.Transactions;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction.Transaction;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction.Transactions;
 import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 

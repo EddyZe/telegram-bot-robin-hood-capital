@@ -70,6 +70,7 @@ public class CommandHandler {
     private final OpenOperatorPanelCommand openOperatorPanelCommand;
     private final EnterRefCodeCommand enterRefCodeCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
+    private final ShowAllUsers showAllUsers;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
 
     public CommandHandler(StartCommand startCommand,
@@ -81,7 +82,7 @@ public class CommandHandler {
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
                           InlineKeyboardInitializer inlineKeyboardInitializer, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ReferalProgramCommand referalProgramCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand, @Value("${telegram.bot.invited.bonus}") int percent,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, EnterRefCodeCommand enterRefCodeCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, EnterRefCodeCommand enterRefCodeCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ShowAllUsers showAllUsers, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -124,6 +125,7 @@ public class CommandHandler {
         this.openOperatorPanelCommand = openOperatorPanelCommand;
         this.enterRefCodeCommand = enterRefCodeCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
+        this.showAllUsers = showAllUsers;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
     }
 
@@ -495,6 +497,8 @@ public class CommandHandler {
         } else if (text.equals(AdminCommand.OPERATOR_PANEL.toString())) {
             resetPreviousCommands(message);
             openOperatorPanelCommand.execute(message);
+        } else if (text.equals(AdminPanel.SHOW_ALL_USERS.toString())) {
+            showAllUsers.execute(message);
         } else if (text.equals(MenuCommand.REFERRAL_PROGRAM.toString())) {
             resetPreviousCommands(message);
             referalProgramCommand.execute(message);

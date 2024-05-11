@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.Transactions;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction.Transactions;
 
 
 @Component

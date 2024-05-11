@@ -45,7 +45,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> findByInvited(Long invitedChatId) {
+    public List<User> findByInvited(Long invitedChatId) {
         return userRepository.findByInvited(invitedChatId);
     }
 }

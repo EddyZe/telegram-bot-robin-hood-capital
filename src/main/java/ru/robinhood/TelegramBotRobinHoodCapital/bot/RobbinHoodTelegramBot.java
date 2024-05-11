@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
@@ -105,6 +106,15 @@ public class RobbinHoodTelegramBot extends TelegramLongPollingBot {
     @SneakyThrows
     public void sendPhotoAll(SendPhoto sendPhoto) {
         execute(sendPhoto);
+    }
+
+    @SneakyThrows
+    public void sendDoc(File file, String fileName, Message message) {
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(message.getChatId());
+        sendDocument.setCaption(fileName);
+        sendDocument.setDocument(new InputFile(file));
+        execute(sendDocument);
     }
 
     @Override
