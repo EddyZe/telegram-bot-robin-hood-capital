@@ -11,6 +11,7 @@ public enum AdminCommand {
     CREATE_START_PHOTO("/create_start_photo"),
     CREATE_START_VIDEO("/create_start_video"),
     SET_OPERATOR("/setmoderator"),
+    SET_BALANCE_ZERO("/setbalance"),
     OPERATOR_PANEL("/oppanel");
 
 

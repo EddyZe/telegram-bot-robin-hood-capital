@@ -16,7 +16,7 @@ import ru.robinhood.TelegramBotRobinHoodCapital.command.Command;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.xml.DataUserModel;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.xls.DataUserModel;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.enums.Role;
 
 import java.io.File;

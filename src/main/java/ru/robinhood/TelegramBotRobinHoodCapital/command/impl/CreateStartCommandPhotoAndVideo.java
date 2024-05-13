@@ -53,29 +53,39 @@ public class CreateStartCommandPhotoAndVideo implements Command {
                 return;
             }
 
-            if (message.getCaption() == null || message.getCaption().split(" ").length < 2) {
-                robbinHoodTelegramBot.sendMessage(
-                        chatId,
-                        "Не верный формат команды. Нажмите 'Команды администратора', чтобы посмотреть пример",
-                        replayKeyboardInitializer.initStartingKeyboard());
+            if (checkedValidCommand(message, chatId))
                 return;
-            }
 
-            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(pathHelloMsg, StandardCharsets.UTF_8))) {
-                String result = null;
-                if (message.hasPhoto()) {
-                    result = "%s\nmethod_name_photo:%s".formatted(message.getCaption().trim(), message.getPhoto().getFirst().getFileId());
-                } else if (message.hasVideo())
-                    result = "%s\nmethod_name_video:%s".formatted(message.getCaption().trim(), message.getVideo().getFileId());
-
-                assert result != null;
-                bufferedWriter.write(result);
-                robbinHoodTelegramBot.sendMessage(
-                        chatId, "Приветствие изменено", replayKeyboardInitializer.initAdminPanel());
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            writeFile(message, chatId);
         }
+    }
+
+    private void writeFile(Message message, Long chatId) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(pathHelloMsg, StandardCharsets.UTF_8))) {
+            String result = null;
+            if (message.hasPhoto()) {
+                result = "%s\nmethod_name_photo:%s".formatted(message.getCaption().trim(), message.getPhoto().get(0).getFileId());
+            } else if (message.hasVideo())
+                result = "%s\nmethod_name_video:%s".formatted(message.getCaption().trim(), message.getVideo().getFileId());
+
+            assert result != null;
+            bufferedWriter.write(result);
+            robbinHoodTelegramBot.sendMessage(
+                    chatId, "Приветствие изменено", replayKeyboardInitializer.initAdminPanel());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean checkedValidCommand(Message message, Long chatId) {
+        if (message.getCaption() == null || message.getCaption().split(" ").length < 2) {
+            robbinHoodTelegramBot.sendMessage(
+                    chatId,
+                    "Не верный формат команды. Нажмите 'Команды администратора', чтобы посмотреть пример",
+                    replayKeyboardInitializer.initStartingKeyboard());
+            return true;
+        }
+        return false;
     }
 }

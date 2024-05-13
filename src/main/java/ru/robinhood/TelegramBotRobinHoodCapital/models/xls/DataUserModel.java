@@ -1,4 +1,4 @@
-package ru.robinhood.TelegramBotRobinHoodCapital.models.xml;
+package ru.robinhood.TelegramBotRobinHoodCapital.models.xls;
 
 
 import lombok.*;

@@ -29,9 +29,7 @@ public class HowEditAddressWalletCommand implements Command {
                 Далее вам будет предложено ввести новый адрес. Как отправите новый адрес, будет отправлена заявка администратору, после обработки заявки вам придет уведомление.
                 В случае, если администратор отклонит вашу заявку вы можете написать в поддержку и после ответа подать заявку повторно.
                 
-                ⚠️<b>ВНИМАНИЕ</b>⚠️
-                Новый адрес кошелька должен принимать TON!
-                В случае ошибки, средства будут безвозвратно утеряны!""".formatted(MenuCommand.FAQ);
+                """.formatted(MenuCommand.FAQ);
 
 
         robbinHoodTelegramBot.editMessage(message, response, inlineKeyboardInitializer.initFAQ());

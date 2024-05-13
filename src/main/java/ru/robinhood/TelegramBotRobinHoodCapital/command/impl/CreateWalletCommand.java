@@ -46,15 +46,10 @@ public class CreateWalletCommand implements Command {
     public void execute(Message message) {
         Long chatId = message.getChatId();
         String walletAddress = message.getText();
-        String tonkreeperBalanceWallet;
 
-        if (walletController.findByNumberWallet(walletAddress).isPresent() || walletAddress.equals(adminWalletNumber)) {
-            robbinHoodTelegramBot.editMessage(
-                    message,
-                    "💰 <b>Настройки кошелька</b> 💰\n\nУпс! Данный кошелек уже занят! 😶",
-                    inlineKeyboardInitializer.initGoBackSettingWallet());
+
+        if (checkedCurrentWallet(message, walletAddress))
             return;
-        }
 
         User user = userController.findByChatId(chatId).orElseThrow();
 
@@ -63,7 +58,7 @@ public class CreateWalletCommand implements Command {
                     .numberWallet(walletAddress)
                     .build();
 
-            tonkreeperBalanceWallet = tonkeeperClient.getTonKeeperWalletBalance(wallet);
+            tonkeeperClient.getTonKeeperWalletBalance(wallet);
         } catch (HttpClientErrorException e) {
             robbinHoodTelegramBot.editMessage(message,
                     "Упс! Возможно вы ввели не валидный адрес кошелька! Попробуй снова или введи 'отмена'",
@@ -77,7 +72,7 @@ public class CreateWalletCommand implements Command {
 
             Wallet newWallet = Wallet.builder()
                     .numberWallet(walletAddress)
-                    .balance(0)
+                    .balance(2500)
                     .origBalance(0)
                     .owner(user)
                     .ownerChatId(user.getChatId())
@@ -89,7 +84,7 @@ public class CreateWalletCommand implements Command {
             walletController.save(newWallet);
             userController.save(user);
 
-            String response = generateResponse(tonkreeperBalanceWallet);
+            String response = generateResponse();
 
             robbinHoodTelegramBot.editMessage(
                     message,
@@ -97,37 +92,25 @@ public class CreateWalletCommand implements Command {
                     inlineKeyboardInitializer.initGoBackSettingWallet()
             );
         }
-        //else {
-//            Wallet wallet = walletController.findByOwnerChatId(chatId).orElseThrow();
-//
-//            wallet.setNumberWallet(walletAddress);
-//
-//            user.setWallet(wallet);
-//            user.setState(UserState.BASE);
-//            walletController.save(wallet);
-//            userController.save(user);
-//
-//            robbinHoodTelegramBot.editMessage(
-//                    message,
-//                    "💰 Настройка кошелька 💰\n\nВы привязали кошелек!\nВаш новый адрес кошелька: %s".formatted(walletAddress),
-//                    inlineKeyboardInitializer.initGoBackSettingWallet()
-//            );
-
- //       }
     }
 
-    private String generateResponse(String tonkreeperBalanceWallet) {
-       // long tonPrice = tonkeeperClient.getTonPrice();
-//        long amount = Long.parseLong(tonkreeperBalanceWallet);
-//
-//        amount *= tonPrice;
-//
-//        double balance = ((double) amount) / 1_000_000_000;
+    private boolean checkedCurrentWallet(Message message, String walletAddress) {
+        if (walletController.findByNumberWallet(walletAddress).isPresent() || walletAddress.equals(adminWalletNumber)) {
+            robbinHoodTelegramBot.editMessage(
+                    message,
+                    "💰 <b>Настройки кошелька</b> 💰\n\nУпс! Данный кошелек уже занят! 😶",
+                    inlineKeyboardInitializer.initGoBackSettingWallet());
+            return true;
+        }
+        return false;
+    }
 
+    private String generateResponse() {
         return """
                 💰 Настройка кошелька 💰
                                 
                 Вы привязали кошелек!
+                В качестве бонуса мы начислили вам 25 USD 💵
                 Теперь вам доступны функции снятия и пополнения!
                 """;
     }

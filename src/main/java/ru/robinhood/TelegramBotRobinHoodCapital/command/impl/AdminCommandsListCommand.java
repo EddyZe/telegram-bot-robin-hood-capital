@@ -65,9 +65,11 @@ public class AdminCommandsListCommand implements Command {
                     
                     %s <b>приветствие</b> ➡️ создает приветствие при нажатии кнопки старт (видео и описание)
                     
-                    %s <b>номер профиля true/false</b> ➡️ назначить модератором. Если значение true - то назначает оператора, если false - то снимает с должности оператора. (Номер профиля указан в личном кабинете. Например: Профиль #2)
+                    %s <b> ID true/false</b> ➡️ назначить модератором. Если значение true - то назначает оператора, если false - то снимает с должности оператора. (Номер профиля указан в личном кабинете. Например: Профиль #2, где 2 это ID)
                     
-                    %s ️ ➡️ открывает панель модератора"""
+                    %s ️ ➡️ открывает панель модератора
+                    
+                    %s <b>ID пользователя</b> ➡️ устанавливает пользователю баланс 0"""
                     .formatted(
                             AdminCommand.AUTH_ADMIN.toString(),
                             AdminCommand.ADMIN_PANEL.toString(),
@@ -78,7 +80,8 @@ public class AdminCommandsListCommand implements Command {
                             AdminCommand.CREATE_START_PHOTO.toString(),
                             AdminCommand.CREATE_START_VIDEO.toString(),
                             AdminCommand.SET_OPERATOR.toString(),
-                            AdminCommand.OPERATOR_PANEL.toString());
+                            AdminCommand.OPERATOR_PANEL.toString(),
+                            AdminCommand.SET_BALANCE_ZERO);
             robbinHoodTelegramBot.sendMessage(chatId, response, replayKeyboardInitializer.initAdminPanel());
         }
     }

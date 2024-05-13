@@ -58,6 +58,15 @@ public class DepositService {
         deposits.forEach(deposit -> {
             Optional<Wallet> wallet = walletService.findByOwnerChatId(deposit.getChatId());
             if (wallet.isPresent()) {
+//                if (deposit.getAmount() < 10000) {
+//                    robbinHoodTelegramBot.sendMessage(
+//                            deposit.getChatId(),
+//                            "Депозит должен быть от 100$. Обратитесь в поддержку для возврата средств.",
+//                            null);
+//                    deposit.setStatus(true);
+//                    depositRepository.save(deposit);
+//                    return;
+//                }
                 Long bonus = deposit.getBonus();
                 if (bonus != null) {
                     issuingBonus(deposit, bonus, wallet);

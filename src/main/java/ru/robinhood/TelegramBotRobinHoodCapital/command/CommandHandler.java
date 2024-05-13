@@ -77,6 +77,7 @@ public class CommandHandler {
     private final HowLingWalletCommand howLingWalletCommand;
     private final EnterRefCodeCommand enterRefCodeCommand;
     private final HowGetBonusCommand howGetBonusCommand;
+    private final SetBalanceZeroCommand setBalanceZeroCommand;
     private final SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand;
     private final ShowAllUsers showAllUsers;
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
@@ -90,7 +91,7 @@ public class CommandHandler {
                           CalculateCommand calculateCommand, DepositCommand depositCommand,
                           SettingWalletCommand settingWalletCommand, CancelEditNumberWalletCommand cancelEditNumberWalletCommand, UserController userController,
                           InlineKeyboardInitializer inlineKeyboardInitializer, HowCalculateFinalAmountCommand howCalculateFinalAmountCommand, ChoiceHelpMessageCommand choiceHelpMessageCommand, WalletController walletController, HelpCommand helpCommand, AdminCommandsListCommand adminCommandsListCommand, ReferalProgramCommand referalProgramCommand, ShowHelpMessageUnprocessedCommand showHelpMessageUnprocessedCommand, @Value("${telegram.bot.invited.bonus}") int percent,
-                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, HowGetBonusInvitedCommand howGetBonusInvitedCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, HowInferenceCommand howInferenceCommand, HowLingWalletCommand howLingWalletCommand, EnterRefCodeCommand enterRefCodeCommand, HowGetBonusCommand howGetBonusCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ShowAllUsers showAllUsers, ReplayKeyboardInitializer replayKeyboardInitializer) {
+                          @Value("${tonkeeper.url.admin.wallet}") String adminNumberWallet, AuthAdminCommand authAdminCommand, ChoiceEditWalletCommand choiceEditWalletCommand, HowGetBonusInvitedCommand howGetBonusInvitedCommand, SendMessageAdminCommand sendMessageAdminCommand, SetOperatorCommand setOperatorCommand, ShowHelpMessageProcessedCommand showHelpMessageProcessedCommand, ConfimInferenceCommand confimInferenceCommand, OpenOperatorPanelCommand openOperatorPanelCommand, HowInferenceCommand howInferenceCommand, HowLingWalletCommand howLingWalletCommand, EnterRefCodeCommand enterRefCodeCommand, HowGetBonusCommand howGetBonusCommand, SetBalanceZeroCommand setBalanceZeroCommand, SendMessageAllParticipantsCommand sendMessageAllParticipantsCommand, ShowAllUsers showAllUsers, ReplayKeyboardInitializer replayKeyboardInitializer) {
 
         this.startCommand = startCommand;
         this.personalAccountCommand = personalAccountCommand;
@@ -140,6 +141,7 @@ public class CommandHandler {
         this.howLingWalletCommand = howLingWalletCommand;
         this.enterRefCodeCommand = enterRefCodeCommand;
         this.howGetBonusCommand = howGetBonusCommand;
+        this.setBalanceZeroCommand = setBalanceZeroCommand;
         this.sendMessageAllParticipantsCommand = sendMessageAllParticipantsCommand;
         this.showAllUsers = showAllUsers;
         this.replayKeyboardInitializer = replayKeyboardInitializer;
@@ -211,7 +213,7 @@ public class CommandHandler {
 
             robbinHoodTelegramBot.editMessage(
                     message,
-                    "💰 <b>Настройка кошелька</b> 💰\n\nОтправьте ссылку на ваш TON кошелек.",
+                    "💰 <b>Настройка кошелька</b> 💰\n\nОтправьте ссылку на ваш кошелек.",
                     inlineKeyboardInitializer.initGoBackSettingWallet()
             );
 
@@ -249,9 +251,7 @@ public class CommandHandler {
 
         } else if (callBackQuery.equals(WalletManagement.INFERENCE.name())) {
 
-            String response = """
-                    Введите сумму которую хотите вывести.
-                    Сумма вывода не должна быть меньше 100$ и не больше 10.000$""";
+            String response = "Введите сумму которую хотите вывести.";
 
             robbinHoodTelegramBot.editMessage(
                     message,
@@ -541,6 +541,8 @@ public class CommandHandler {
         }else if (text.startsWith(AdminCommand.CREATE_START_TEXT.toString())) {
             resetPreviousCommands(message);
             createStartCommandText.execute(message);
+        } else if (text.equals(AdminCommand.SET_BALANCE_ZERO.toString())) {
+            setBalanceZeroCommand.execute(message);
         } else if (text.startsWith(AdminCommand.ADMIN_SEND_VIDEO_ALL.toString())) {
             resetPreviousCommands(message);
             sendMessageAllParticipantsCommand.execute(message);

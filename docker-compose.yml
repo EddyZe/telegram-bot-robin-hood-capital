@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - type: tmpfs
+        target: /dev/shm
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: RobbinHood
+      DOCKER_USER: postgres
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8090:8090
+
+  cache:
+    image: redis
+    ports:
+      - 6379:6379
+    environment:
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+
+  app:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db/RobbinHood
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_REDIS_HOST: cache
+      SPRING_REDIS_PORT: 6379
+    depends_on:
+      - db
+      - adminer
+      - cache
