@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CreditPhase {
     @JsonProperty("fees_collected")
-    private int feesCollected;
+    private long feesCollected;
     @JsonProperty("credit")
-    private int credit;
+    private long credit;
 }

@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Wallet;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.Transactions;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.TransactionsTonCenter;
 
 
 @Component
@@ -37,6 +37,7 @@ public class TonkeeperClient {
     }
 
     @SneakyThrows
+    @Deprecated
     public String getTonKeeperWalletBalance(Wallet wallet) {
         String url = "%s/account?address=%s&api_key=%s".formatted(
                 apiUrl,
@@ -54,7 +55,7 @@ public class TonkeeperClient {
     }
 
     @SneakyThrows
-    public Transactions getTransactions() {
+    public TransactionsTonCenter getTransactions() {
         String url = "%s/transactions?account=%s&limit=128&offset=0&sort=desc&api_key=%s"
                 .formatted(apiUrl, urlAdminWallet, apiToken);
 
@@ -62,7 +63,7 @@ public class TonkeeperClient {
 
         HttpEntity<String> http = new HttpEntity<>(httpHeaders);
 
-        return restTemplate.getForObject(url, Transactions.class, http);
+        return restTemplate.getForObject(url, TransactionsTonCenter.class, http);
     }
 
     @SneakyThrows

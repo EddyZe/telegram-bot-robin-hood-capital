@@ -29,7 +29,7 @@ public class TransactionData {
     @JsonProperty("end_status")
     private String endStatus;
     @JsonProperty("total_fees")
-    private int totalFees;
+    private long totalFees;
     @JsonProperty("end_balance")
     private long endBalance;
     @JsonProperty("transaction_type")
@@ -39,7 +39,7 @@ public class TransactionData {
     @JsonProperty("state_update_new")
     private String stateUpdateNew;
     @JsonProperty("in_msg")
-    private InMsg in_msg;
+    private InMsg inMsg;
     @JsonProperty("out_msgs")
     private List<Object> outMsgs;
     @JsonProperty("block")

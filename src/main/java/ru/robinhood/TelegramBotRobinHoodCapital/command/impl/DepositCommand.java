@@ -7,13 +7,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.robinhood.TelegramBotRobinHoodCapital.bot.RobbinHoodTelegramBot;
+import ru.robinhood.TelegramBotRobinHoodCapital.client.TonApiClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.command.Command;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.DepositController;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Deposit;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.tonAPI.TransactionData;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.tonAPI.TransactionsTonApi;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.Transaction;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.Transactions;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.TransactionsTonCenter;
 import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
@@ -30,13 +33,14 @@ public class DepositCommand implements Command {
     private final DepositController depositController;
     private final UserController userController;
     private final String walletNumber;
+    private final TonApiClient tonApiClient;
     private final double percent;
     private final String qrCodeWallet;
     private final InlineKeyboardInitializer inlineKeyboardInitializer;
 
 
     public DepositCommand(@Lazy RobbinHoodTelegramBot robbinHoodTelegramBot, TonkeeperClient tonkeeperClient, DepositController depositController, UserController userController,
-                          @Value("${tonkeeper.url.admin.wallet}") String walletNumber,
+                          @Value("${tonkeeper.url.admin.wallet}") String walletNumber, TonApiClient tonApiClient,
                           @Value("${telegram.bot.invited.bonus}") int percent,
                           @Value("${telegram.bot.QR.code.filename}") String qrCodeWallet, InlineKeyboardInitializer inlineKeyboardInitializer) {
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
@@ -44,6 +48,7 @@ public class DepositCommand implements Command {
         this.depositController = depositController;
         this.userController = userController;
         this.walletNumber = walletNumber;
+        this.tonApiClient = tonApiClient;
         this.percent = percent;
         this.qrCodeWallet = qrCodeWallet;
         this.inlineKeyboardInitializer = inlineKeyboardInitializer;
@@ -81,64 +86,88 @@ public class DepositCommand implements Command {
 
     @Scheduled(cron = "0 * * * * *")
     public void createDeposit() {
-        Transactions transactions = tonkeeperClient.getTransactions();
-        long tonPrice = tonkeeperClient.getTonPrice();
+        TransactionsTonCenter transactionsTonCenter = tonkeeperClient.getTransactions();
 
-        List<Transaction> transactionList = transactions.getTransactions();
+        if (transactionsTonCenter == null)
+            return;
+
+
+
+        List<Transaction> transactionList = transactionsTonCenter.getTransactions();
+
         if (transactionList.isEmpty())
             return;
 
         String accountID = transactionList.get(0).getAccount();
 
-        transactionList.forEach(transaction -> {
+        TransactionsTonApi transactions = tonApiClient.getTransaction(accountID);
 
-            if (transaction.getInMsg() != null &&
-                    transaction.getInMsg().getMessageContent() != null &&
-                        transaction.getInMsg().getMessageContent().getDecoded() != null
-                            && transaction.getInMsg().getMessageContent().getDecoded().getComment() != null) {
+        List<TransactionData> transactionDataList = transactions.getTransactions();
 
-                if (depositController.findByDepositMessageHash(transaction.getHash()).isEmpty()) {
+        if (transactionDataList == null)
+            return;
 
-                    try {
+        transactionDataList.forEach(transactionData -> {
+            Optional<Deposit> depositOptional =
+                    depositController.findByDepositMessageHash(transactionData.getHash());
 
-                        long chatId = Long.parseLong(transaction
-                                .getInMsg()
-                                .getMessageContent()
-                                .getDecoded()
-                                .getComment()
-                                .trim());
+            if (depositOptional.isEmpty() && checkTransaction(transactionData)) {
 
-                        Optional<User> user = userController.findByChatId(chatId);
+                try {
 
-                        if (user.isPresent()) {
+                    Long amount = Long.parseLong(transactionData.getInMsg().getDecodedBody().getAmount()) / 10000;
 
-                            long amount = Long.parseLong(transaction
-                                    .getInMsg()
-                                    .getValue());
+                    if (transactionData.getInMsg().getDecodedBody().getForwardPayload() != null &&
+                        transactionData.getInMsg().getDecodedBody().getForwardPayload().getValue() != null &&
+                        transactionData.getInMsg().getDecodedBody().getForwardPayload().getValue().getValue() != null) {
 
-                            amount *= tonPrice;
+                        Long chatId = generateChatId(transactionData);
 
-                            Deposit deposit = Deposit.builder()
-                                    .amount(amount / 1_000_000_000)
-                                    .chatId(chatId)
-                                    .status(false)
-                                    .owner(user.get())
-                                    .hashTransaction(transaction.getHash())
-                                    .createdAt(LocalDateTime.now())
-                                    .build();
+                        Optional<User> userOptional = userController.findByChatId(chatId);
+
+                        if (userOptional.isPresent()) {
+                            Deposit deposit = createDeposit(transactionData, amount, chatId, userOptional);
 
                             List<Deposit> deposits = depositController.findByChatId(chatId);
 
-                            if (deposits.isEmpty() && user.get().getInvited() != null) {
-                                deposit.setBonus((long) ((amount / 1_000_000_000) * (percent / 100)));
+                            if (deposits.isEmpty() && userOptional.get().getInvited() != null) {
+                                deposit.setBonus((long) ((amount) * (percent / 100)));
                             }
 
                             depositController.save(deposit);
                         }
-                    } catch (NumberFormatException ignored) {}
-                }
+                    }
+                } catch (NumberFormatException ignored) {}
+
             }
         });
     }
 
+    private Deposit createDeposit(TransactionData transactionData, Long amount, Long chatId, Optional<User> userOptional) {
+        return Deposit.builder()
+                .amount(amount)
+                .chatId(chatId)
+                .status(false)
+                .owner(userOptional.get())
+                .hashTransaction(transactionData.getHash())
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private Long generateChatId(TransactionData transactionData) {
+        return Long.parseLong(transactionData
+                .getInMsg()
+                .getDecodedBody()
+                .getForwardPayload()
+                .getValue()
+                .getValue()
+                .getText());
+    }
+
+
+    private boolean checkTransaction(TransactionData transactionData) {
+        return transactionData.getInMsg() != null &&
+               transactionData.getInMsg().getDecodedBody() != null &&
+               transactionData.getInMsg().getDecodedOpName().equals("jetton_notify");
+    }
 }

@@ -17,13 +17,13 @@ public class ComputePhase {
     @JsonProperty("success")
     private boolean success;
     @JsonProperty("gas_fees")
-    private int gasFees;
+    private long gasFees;
     @JsonProperty("gas_used")
-    private int gasUsed;
+    private long gasUsed;
     @JsonProperty("vm_steps")
-    private int vmSteps;
+    private long vmSteps;
     @JsonProperty("exit_code")
-    private int exitCode;
+    private long exitCode;
     @JsonProperty("exit_code_description")
     private String exitCodeDescription;
 }

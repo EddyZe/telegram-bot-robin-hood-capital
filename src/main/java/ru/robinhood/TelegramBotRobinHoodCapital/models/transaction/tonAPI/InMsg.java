@@ -24,17 +24,17 @@ public class InMsg {
     @JsonProperty("bounced")
     private boolean bounced;
     @JsonProperty("value")
-    private int value;
+    private long value;
     @JsonProperty("fwd_fee")
-    private int fwdFee;
+    private long fwdFee;
     @JsonProperty("ihr_fee")
-    private int ihrFee;
+    private long ihrFee;
     @JsonProperty("destination")
     private Destination destination;
     @JsonProperty("source")
     private Source source;
     @JsonProperty("import_fee")
-    private int importFee;
+    private long importFee;
     @JsonProperty("created_at")
     private long createdAt;
     @JsonProperty("op_code")

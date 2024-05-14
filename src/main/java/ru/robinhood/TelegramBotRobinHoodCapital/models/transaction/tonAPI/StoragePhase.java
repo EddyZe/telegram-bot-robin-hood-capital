@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class StoragePhase {
     @JsonProperty("fees_collected")
-    private int feesCollected;
+    private long feesCollected;
     @JsonProperty("status_change")
     private String statusChange;
 }

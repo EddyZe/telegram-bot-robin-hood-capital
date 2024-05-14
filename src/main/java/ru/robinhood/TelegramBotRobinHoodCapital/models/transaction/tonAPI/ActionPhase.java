@@ -16,13 +16,13 @@ public class ActionPhase {
     @JsonProperty("success")
     private boolean success;
     @JsonProperty("result_code")
-    private int resultCode;
+    private long resultCode;
     @JsonProperty("total_actions")
-    private int totalActions;
+    private long totalActions;
     @JsonProperty("skipped_actions")
-    private int skippedActions;
+    private long skippedActions;
     @JsonProperty("fwd_fees")
-    private int fwdFees;
+    private long fwdFees;
     @JsonProperty("total_fees")
-    private int totalFees;
+    private long totalFees;
 }

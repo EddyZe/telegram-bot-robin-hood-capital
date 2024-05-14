@@ -1,21 +1,21 @@
 package ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.tonAPI;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
+import java.util.List;
+
+
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class Value {
-    @JsonProperty("sum_type")
-    private String sumType;
-    @JsonProperty("op_code")
-    private long opCode;
-    @JsonProperty("value")
-    private TextValue value;
+public class TransactionsTonApi {
+
+    @JsonProperty("transactions")
+    List<TransactionData> transactions;
+
 }
