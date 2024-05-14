@@ -1,4 +1,4 @@
-package ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction;
+package ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

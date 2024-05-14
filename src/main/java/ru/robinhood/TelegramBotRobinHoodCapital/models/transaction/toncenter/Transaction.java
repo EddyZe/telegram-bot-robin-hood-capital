@@ -1,7 +1,8 @@
-package ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction;
+package ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.*;
 
 import java.util.List;
 

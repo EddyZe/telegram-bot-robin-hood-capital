@@ -12,8 +12,8 @@ import ru.robinhood.TelegramBotRobinHoodCapital.controllers.DepositController;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.Deposit;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.entities.User;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction.Transaction;
-import ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction.Transactions;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.Transaction;
+import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.Transactions;
 import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
@@ -85,6 +85,10 @@ public class DepositCommand implements Command {
         long tonPrice = tonkeeperClient.getTonPrice();
 
         List<Transaction> transactionList = transactions.getTransactions();
+        if (transactionList.isEmpty())
+            return;
+
+        String accountID = transactionList.get(0).getAccount();
 
         transactionList.forEach(transaction -> {
 

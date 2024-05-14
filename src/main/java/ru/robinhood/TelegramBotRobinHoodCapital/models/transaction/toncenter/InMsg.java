@@ -1,11 +1,11 @@
-package ru.robinhood.TelegramBotRobinHoodCapital.models.trontransaction;
+package ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class OutMsg {
+public class InMsg {
 
     @JsonProperty("hash")
     private String hash;
