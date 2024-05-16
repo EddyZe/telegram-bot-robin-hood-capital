@@ -3,11 +3,13 @@ package ru.robinhood.TelegramBotRobinHoodCapital.command.impl;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.robinhood.TelegramBotRobinHoodCapital.bot.RobbinHoodTelegramBot;
 import ru.robinhood.TelegramBotRobinHoodCapital.client.TonApiClient;
+import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.command.Command;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.DepositController;
 import ru.robinhood.TelegramBotRobinHoodCapital.controllers.UserController;
@@ -17,9 +19,12 @@ import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.tonAPI.Transa
 import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.tonAPI.TransactionsTonApi;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.Transaction;
 import ru.robinhood.TelegramBotRobinHoodCapital.models.transaction.toncenter.TransactionsTonCenter;
-import ru.robinhood.TelegramBotRobinHoodCapital.client.TonkeeperClient;
 import ru.robinhood.TelegramBotRobinHoodCapital.util.keybord.InlineKeyboardInitializer;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -76,10 +81,15 @@ public class DepositCommand implements Command {
 
 
         robbinHoodTelegramBot.deleteMessage(message);
-
+        ClassPathResource resource = new ClassPathResource(qrCodeWallet);
+        File file = File.createTempFile("temp-", ".png");
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(resource.getInputStream());
+             BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+            bufferedOutputStream.write(bufferedInputStream.readAllBytes());
+        }
         robbinHoodTelegramBot.sendPhoto(
                 message,
-                qrCodeWallet,
+                file,
                 response,
                 inlineKeyboardInitializer.initClosePayMessage());
     }

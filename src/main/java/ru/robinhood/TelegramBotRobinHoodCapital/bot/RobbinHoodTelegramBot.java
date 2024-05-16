@@ -71,9 +71,9 @@ public class RobbinHoodTelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendPhoto(Message message, String path, String text, ReplyKeyboard replyKeyboard) {
+    public void sendPhoto(Message message, File path, String text, ReplyKeyboard replyKeyboard) {
         SendPhoto sendPhoto = new SendPhoto();
-        sendPhoto.setPhoto(new InputFile(new File(path)));
+        sendPhoto.setPhoto(new InputFile(path));
         sendPhoto.setCaption(text);
         sendPhoto.setChatId(message.getChatId());
         sendPhoto.setReplyMarkup(replyKeyboard);

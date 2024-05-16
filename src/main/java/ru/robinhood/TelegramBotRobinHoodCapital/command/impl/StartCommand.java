@@ -21,20 +21,21 @@ import java.io.IOException;
 public class StartCommand implements Command {
     private final ReplayKeyboardInitializer replayKeyboardInitializer;
     private final RobbinHoodTelegramBot robbinHoodTelegramBot;
-    private final String pathHelloMsg;
+    private final String fileName;
 
 
     public StartCommand(ReplayKeyboardInitializer replayKeyboardInitializer,
                         @Lazy RobbinHoodTelegramBot robbinHoodTelegramBot,
-                        @Value("${telegram.bot.start.message}") String pathHelloMsg) {
+                        @Value("${telegram.bot.start.message}") String fileName) {
         this.replayKeyboardInitializer = replayKeyboardInitializer;
         this.robbinHoodTelegramBot = robbinHoodTelegramBot;
-        this.pathHelloMsg = pathHelloMsg;
+        this.fileName = fileName;
     }
 
     @Override
     public void execute(Message message) {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(pathHelloMsg))){
+        //ClassPathResource resource = new ClassPathResource(fileName);
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(fileName))){
             StringBuilder response = new StringBuilder();
             String methodName = null;
 

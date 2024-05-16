@@ -61,6 +61,8 @@ public class CreateStartCommandPhotoAndVideo implements Command {
     }
 
     private void writeFile(Message message, Long chatId) {
+
+
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(pathHelloMsg, StandardCharsets.UTF_8))) {
             String result = null;
             if (message.hasPhoto()) {
