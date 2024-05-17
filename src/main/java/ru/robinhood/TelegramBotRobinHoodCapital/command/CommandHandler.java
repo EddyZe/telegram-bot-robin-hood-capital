@@ -213,7 +213,7 @@ public class CommandHandler {
 
             robbinHoodTelegramBot.editMessage(
                     message,
-                    "💰 <b>Настройка кошелька</b> 💰\n\nОтправьте ссылку на ваш кошелек.",
+                    "💰 <b>Настройка кошелька</b> 💰\n\nОтправьте ссылку на ваш кошелек. Указывайте кошелек USDT в сети TON.",
                     inlineKeyboardInitializer.initGoBackSettingWallet()
             );
 
